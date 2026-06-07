@@ -14,33 +14,36 @@ export default function KpiBar({ kpis, onChange }) {
 
   return (
     <section className="kpi-bar">
-      {kpis.map((k) => (
-        <div key={k.id} className="kpi-card">
-          <div className="kpi-head">
-            <strong>{k.name}</strong>
-            <button className="icon-btn" aria-label={`${k.name} 삭제`}
-              onClick={() => confirm(`KPI '${k.name}'을(를) 삭제할까요?`) && onChange(kpis.filter((x) => x.id !== k.id))}>✕</button>
+      {kpis.map((k) => {
+        const rate = kpiRate(k) ?? 0
+        return (
+          <div key={k.id} className="kpi-card">
+            <div className="kpi-head">
+              <strong>{k.name}</strong>
+              <button className="icon-btn" aria-label={`${k.name} 삭제`}
+                onClick={() => confirm(`KPI '${k.name}'을(를) 삭제할까요?`) && onChange(kpis.filter((x) => x.id !== k.id))}>✕</button>
+            </div>
+            {k.type === 'numeric' ? (
+              <>
+                <div className="kpi-rate">{rate}%</div>
+                <div className="kpi-detail">
+                  <input type="number" value={k.current} aria-label={`${k.name} 현재값`}
+                    onChange={(e) => update(k.id, { current: Number(e.target.value) || 0 })} />
+                  <span>/ {k.target}{k.unit}</span>
+                </div>
+                <div className="gauge">
+                  <div className="gauge-fill" style={{ width: `${Math.min(100, rate)}%` }} />
+                </div>
+              </>
+            ) : (
+              <select value={k.status} aria-label={`${k.name} 상태`}
+                onChange={(e) => update(k.id, { status: e.target.value })}>
+                {QUAL_STATUS.map((s) => <option key={s} value={s}>{QUAL_ICON[s]} {s}</option>)}
+              </select>
+            )}
           </div>
-          {k.type === 'numeric' ? (
-            <>
-              <div className="kpi-rate">{kpiRate(k) ?? 0}%</div>
-              <div className="kpi-detail">
-                <input type="number" value={k.current} aria-label={`${k.name} 현재값`}
-                  onChange={(e) => update(k.id, { current: Number(e.target.value) })} />
-                <span>/ {k.target}{k.unit}</span>
-              </div>
-              <div className="gauge">
-                <div className="gauge-fill" style={{ width: `${Math.min(100, kpiRate(k) ?? 0)}%` }} />
-              </div>
-            </>
-          ) : (
-            <select value={k.status} aria-label={`${k.name} 상태`}
-              onChange={(e) => update(k.id, { status: e.target.value })}>
-              {QUAL_STATUS.map((s) => <option key={s} value={s}>{QUAL_ICON[s]} {s}</option>)}
-            </select>
-          )}
-        </div>
-      ))}
+        )
+      })}
       <button className="kpi-card add-card" onClick={() => setAdding(true)}>+ KPI</button>
       {adding && <KpiForm onSubmit={(kpi) => { onChange([...kpis, { id: crypto.randomUUID(), ...kpi }]); setAdding(false) }}
         onClose={() => setAdding(false)} />}

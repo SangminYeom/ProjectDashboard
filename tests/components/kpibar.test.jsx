@@ -30,3 +30,10 @@ it('KPI 추가 폼으로 수치형 KPI를 추가할 수 있다', () => {
   expect(added).toMatchObject({ name: '신규고객', type: 'numeric', target: 100, current: 0 })
   expect(added.id).toBeTruthy()
 })
+
+it('잘못된 숫자 입력은 0으로 보정한다', () => {
+  const onChange = vi.fn()
+  render(<KpiBar kpis={[numericKpi]} onChange={onChange} />)
+  fireEvent.change(screen.getByLabelText('매출 현재값'), { target: { value: '' } })
+  expect(onChange).toHaveBeenCalledWith([{ ...numericKpi, current: 0 }])
+})
