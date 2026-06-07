@@ -12,6 +12,9 @@ describe('initiativeProgress', () => {
   it('태스크가 없으면 0', () => {
     expect(initiativeProgress({ tasks: [] })).toBe(0)
   })
+  it('tasks 키가 없으면 0', () => {
+    expect(initiativeProgress({})).toBe(0)
+  })
 })
 
 describe('isTaskDelayed', () => {
@@ -40,6 +43,12 @@ describe('kpiRate', () => {
   it('정성형이면 null', () => {
     expect(kpiRate({ type: 'qualitative', status: '순항' })).toBe(null)
   })
+  it('target이 음수면 null', () => {
+    expect(kpiRate({ type: 'numeric', target: -10, current: 5 })).toBe(null)
+  })
+  it('current가 없으면 0으로 계산', () => {
+    expect(kpiRate({ type: 'numeric', target: 10 })).toBe(0)
+  })
 })
 
 describe('projectKpiAverage', () => {
@@ -64,6 +73,10 @@ describe('countDelayedTasks', () => {
       { tasks: [{ endDate: '2026-02-01', progress: 99 }] },
     ] }
     expect(countDelayedTasks(p, '2026-06-07')).toBe(2)
+  })
+  it('initiatives나 tasks 키가 없어도 0', () => {
+    expect(countDelayedTasks({}, '2026-06-07')).toBe(0)
+    expect(countDelayedTasks({ initiatives: [{}] }, '2026-06-07')).toBe(0)
   })
 })
 

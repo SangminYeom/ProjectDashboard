@@ -12,8 +12,8 @@ export function isTaskDelayed(task, today) {
 }
 
 export function kpiRate(kpi) {
-  if (kpi.type !== 'numeric' || !kpi.target) return null
-  return Math.round((kpi.current / kpi.target) * 100)
+  if (kpi.type !== 'numeric' || !kpi.target || kpi.target < 0) return null
+  return Math.round(((kpi.current ?? 0) / kpi.target) * 100)
 }
 
 export function projectKpiAverage(project) {
