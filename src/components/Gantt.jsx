@@ -5,7 +5,7 @@ const toMs = (d) => new Date(d + 'T00:00:00').getTime()
 export default function Gantt({ tasks, onUpdate, onRemove, today = todayStr() }) {
   if (tasks.length === 0) return <p className="empty">태스크가 없습니다.</p>
 
-  const minMs = Math.min(...tasks.map((t) => toMs(t.startDate)))
+  const minMs = Math.min(...tasks.map((t) => toMs(t.startDate)), toMs(today))
   const maxMs = Math.max(...tasks.map((t) => toMs(t.endDate)), toMs(today))
   const span = Math.max(maxMs - minMs, 1)
   const leftPct = (d) => ((toMs(d) - minMs) / span) * 100

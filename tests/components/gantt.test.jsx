@@ -33,3 +33,12 @@ it('막대 위치가 기간에 비례한다', () => {
   expect(bars[0].style.left).toBe('0%') // 첫 태스크는 범위 시작점
   expect(parseFloat(bars[1].style.left)).toBeGreaterThan(50) // 4월 시작은 중반 이후
 })
+
+it('모든 태스크가 미래여도 오늘선이 0% 이상에 위치한다', () => {
+  const future = [{ id: 'f1', name: '미래 태스크', startDate: '2026-07-01', endDate: '2026-08-31', progress: 0, status: '예정' }]
+  const { container } = render(
+    <Gantt tasks={future} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
+  )
+  const todayLine = container.querySelector('.today-line')
+  expect(parseFloat(todayLine.style.left)).toBeGreaterThanOrEqual(0)
+})
