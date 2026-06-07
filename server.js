@@ -16,7 +16,7 @@ export function createApp({ dataPath, backupDir }) {
   })
 
   app.put('/api/projects', (req, res) => {
-    const { projects } = req.body
+    const { projects } = req.body ?? {}
     if (!Array.isArray(projects)) {
       return res.status(400).json({ error: 'projects 배열이 필요합니다' })
     }

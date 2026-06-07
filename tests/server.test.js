@@ -34,5 +34,6 @@ describe('PUT /api/projects', () => {
   it('projects가 배열이 아니면 400', async () => {
     const res = await request(app).put('/api/projects').send({ projects: '엉뚱한 값' })
     expect(res.status).toBe(400)
+    expect(res.body.error).toBe('projects 배열이 필요합니다')
   })
 })
