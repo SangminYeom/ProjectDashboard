@@ -56,4 +56,16 @@ describe('loadData', () => {
     fs.writeFileSync(dataPath, '{ 깨진 JSON')
     expect(loadData(dataPath, backupDir)).toEqual({ data: DEFAULT_DATA, recoveredFrom: null })
   })
+  it('백업도 손상이면 기본 데이터로 폴백한다', () => {
+    fs.mkdirSync(backupDir, { recursive: true })
+    fs.writeFileSync(path.join(backupDir, '2026-06-06.json'), '{ 깨진 백업')
+    fs.writeFileSync(dataPath, '{ 깨진 JSON')
+    expect(loadData(dataPath, backupDir)).toEqual({ data: DEFAULT_DATA, recoveredFrom: null })
+  })
+  it('날짜 형식이 아닌 json 파일은 백업으로 취급하지 않는다', () => {
+    saveData(dataPath, sample, backupDir, '2026-06-06')
+    fs.writeFileSync(path.join(backupDir, 'other.json'), '{"projects":[]}')
+    fs.writeFileSync(dataPath, '{ 깨진 JSON')
+    expect(loadData(dataPath, backupDir).recoveredFrom).toBe('2026-06-06.json')
+  })
 })

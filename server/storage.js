@@ -3,6 +3,8 @@ import path from 'node:path'
 
 export const DEFAULT_DATA = { projects: [] }
 
+const BACKUP_PATTERN = /^\d{4}-\d{2}-\d{2}\.json$/
+
 export function loadData(dataPath, backupDir) {
   if (!fs.existsSync(dataPath)) {
     return { data: structuredClone(DEFAULT_DATA), recoveredFrom: null }
@@ -12,8 +14,12 @@ export function loadData(dataPath, backupDir) {
   } catch {
     const latest = latestBackup(backupDir)
     if (latest) {
-      const data = JSON.parse(fs.readFileSync(path.join(backupDir, latest), 'utf8'))
-      return { data, recoveredFrom: latest }
+      try {
+        const data = JSON.parse(fs.readFileSync(path.join(backupDir, latest), 'utf8'))
+        return { data, recoveredFrom: latest }
+      } catch {
+        // 백업도 손상 — 기본값으로 폴백
+      }
     }
     return { data: structuredClone(DEFAULT_DATA), recoveredFrom: null }
   }
@@ -21,7 +27,7 @@ export function loadData(dataPath, backupDir) {
 
 function latestBackup(backupDir) {
   if (!backupDir || !fs.existsSync(backupDir)) return null
-  const files = fs.readdirSync(backupDir).filter((f) => f.endsWith('.json')).sort()
+  const files = fs.readdirSync(backupDir).filter((f) => BACKUP_PATTERN.test(f)).sort()
   return files.at(-1) ?? null
 }
 
@@ -37,7 +43,7 @@ export function saveData(dataPath, data, backupDir, today) {
 function writeBackup(backupDir, json, today) {
   fs.mkdirSync(backupDir, { recursive: true })
   fs.writeFileSync(path.join(backupDir, `${today}.json`), json)
-  const files = fs.readdirSync(backupDir).filter((f) => f.endsWith('.json')).sort()
+  const files = fs.readdirSync(backupDir).filter((f) => BACKUP_PATTERN.test(f)).sort()
   for (const f of files.slice(0, Math.max(0, files.length - 7))) {
     fs.unlinkSync(path.join(backupDir, f))
   }
