@@ -17,6 +17,8 @@ it('전체 요약과 프로젝트 카드를 표시한다', () => {
   expect(screen.getByText(/프로젝트 1개 · 지연 태스크 1건 · 미해결 고려사항 1건/)).toBeInTheDocument()
   expect(screen.getByText('차세대 시스템')).toBeInTheDocument()
   expect(screen.getByText('KPI 70%')).toBeInTheDocument()
+  expect(screen.getByText('과제 1건')).toBeInTheDocument()
+  expect(screen.queryByText(/과제 진척/)).not.toBeInTheDocument() // 프로젝트 단위 진척률은 표시하지 않음
   expect(screen.getByText('지연 1')).toBeInTheDocument()
 })
 

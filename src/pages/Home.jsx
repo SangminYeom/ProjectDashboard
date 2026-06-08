@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Modal from '../components/Modal.jsx'
 import {
-  projectKpiAverage, initiativeProgress, countDelayedTasks, countOpenConsiderations, todayStr,
+  projectKpiAverage, countDelayedTasks, countOpenConsiderations, todayStr,
 } from '../lib/calc.js'
 
 export default function Home({ projects, onOpen, onChange }) {
@@ -20,9 +20,6 @@ export default function Home({ projects, onOpen, onChange }) {
       <div className="card-grid">
         {projects.map((p) => {
           const kpi = projectKpiAverage(p)
-          const avgProgress = p.initiatives.length
-            ? Math.round(p.initiatives.reduce((s, i) => s + initiativeProgress(i), 0) / p.initiatives.length)
-            : null
           const pDelayed = countDelayedTasks(p, today)
           const pOpen = countOpenConsiderations(p)
           return (
@@ -31,7 +28,7 @@ export default function Home({ projects, onOpen, onChange }) {
               <p className="period">{p.startDate} ~ {p.endDate}</p>
               <p className="card-stats">
                 <span>KPI {kpi === null ? '—' : `${kpi}%`}</span>
-                <span>과제 진척 {avgProgress === null ? '—' : `${avgProgress}%`}</span>
+                <span>과제 {p.initiatives.length}건</span>
               </p>
               <div className="badges">
                 {pDelayed > 0 && <span className="badge badge-warn">지연 {pDelayed}</span>}
