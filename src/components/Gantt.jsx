@@ -58,7 +58,7 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, today = to
           const delayed = hasDate(t) && isTaskDelayed(t, today)
           return (
             <div key={t.id}
-              className={`gantt-row${dragOver === idx ? ' drag-over' : ''}`}
+              className={`gantt-row${dragOver === idx ? ' drag-over' : ''}${!hasDate(t) ? ' unscheduled' : ''}`}
               draggable
               onDragStart={(e) => { dragIdx.current = idx; e.dataTransfer.effectAllowed = 'move' }}
               onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOver(idx) }}
