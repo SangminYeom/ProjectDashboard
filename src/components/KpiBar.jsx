@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Modal from './Modal.jsx'
 import { kpiRate } from '../lib/calc.js'
 
@@ -6,19 +6,37 @@ const QUAL_STATUS = ['달성', '순항', '주의', '미달']
 
 export default function KpiBar({ kpis, onChange }) {
   const [adding, setAdding] = useState(false)
-  const [editingKpi, setEditingKpi] = useState(null) // kpi 객체
+  const [editingKpi, setEditingKpi] = useState(null)
+  const [dragOver, setDragOver] = useState(null)
+  const dragIdx = useRef(null)
 
   function update(id, patch) {
     onChange(kpis.map((k) => (k.id === id ? { ...k, ...patch } : k)))
   }
 
+  function reorder(fromIdx, toIdx) {
+    if (fromIdx === toIdx) return
+    const arr = [...kpis]
+    const [item] = arr.splice(fromIdx, 1)
+    arr.splice(toIdx, 0, item)
+    onChange(arr)
+  }
+
   return (
     <section className="kpi-bar">
-      {kpis.map((k) => {
+      {kpis.map((k, idx) => {
         const rate = kpiRate(k) ?? 0
         return (
-          <div key={k.id} className="kpi-card">
+          <div key={k.id}
+            className={`kpi-card${dragOver === idx ? ' drag-over' : ''}`}
+            draggable
+            onDragStart={() => { dragIdx.current = idx }}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(idx) }}
+            onDrop={() => { reorder(dragIdx.current, idx); setDragOver(null) }}
+            onDragEnd={() => { dragIdx.current = null; setDragOver(null) }}
+          >
             <div className="kpi-head">
+              <span className="drag-handle" aria-hidden="true">⠿</span>
               <strong>{k.name}</strong>
               <button className="icon-btn" aria-label={`${k.name} 수정`}
                 onClick={() => setEditingKpi(k)}>✏</button>
