@@ -132,8 +132,9 @@ const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
                   {(i.milestones ?? []).map((m) => (
                     <div key={m.id} className="ini-row">
                       <span className="ini-name">
-                        <span style={{ color: '#f59e0b', marginRight: 4 }}>◆</span>{m.name}
+                        <span className="milestone-icon">◆</span>{m.name}
                       </span>
+                      <div style={{ flex: 1 }} />
                       <span className="ini-pct" style={{ color: '#b45309' }}>{m.date}</span>
                     </div>
                   ))}
