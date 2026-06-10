@@ -5,8 +5,12 @@ export default async function handler(req, res) {
   if (!requireAuth(req, res)) return
 
   if (req.method === 'GET') {
-    const data = await readStore()
-    return res.status(200).json({ ...data, recoveredFrom: null })
+    try {
+      const data = await readStore()
+      return res.status(200).json({ projects: data.projects, recoveredFrom: null })
+    } catch {
+      return res.status(500).json({ error: 'internal' })
+    }
   }
 
   if (req.method === 'PUT') {
@@ -14,8 +18,12 @@ export default async function handler(req, res) {
     if (!Array.isArray(projects)) {
       return res.status(400).json({ error: 'projects 배열이 필요합니다' })
     }
-    await writeStore({ projects })
-    return res.status(204).end()
+    try {
+      await writeStore({ projects })
+      return res.status(204).end()
+    } catch {
+      return res.status(500).json({ error: 'internal' })
+    }
   }
 
   res.status(405).end()

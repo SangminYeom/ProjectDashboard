@@ -18,7 +18,7 @@ function req(method, body = null) {
   return { method, body, headers: {} }
 }
 function res() {
-  const r = { _status: 200, status: vi.fn(), json: vi.fn(), end: vi.fn() }
+  const r = { status: vi.fn(), json: vi.fn(), end: vi.fn() }
   r.status.mockReturnValue(r)
   return r
 }
@@ -72,5 +72,23 @@ describe('허용되지 않는 메서드', () => {
     await handler(req('DELETE'), r)
     expect(r.status).toHaveBeenCalledWith(405)
     expect(r.end).toHaveBeenCalled()
+  })
+})
+
+describe('DB 오류 처리', () => {
+  it('readStore 오류 시 500을 반환한다', async () => {
+    readStore.mockRejectedValue(new Error('db down'))
+    const r = res()
+    await handler(req('GET'), r)
+    expect(r.status).toHaveBeenCalledWith(500)
+    expect(r.json).toHaveBeenCalledWith({ error: 'internal' })
+  })
+
+  it('writeStore 오류 시 500을 반환한다', async () => {
+    writeStore.mockRejectedValue(new Error('db down'))
+    const r = res()
+    await handler(req('PUT', { projects: [] }), r)
+    expect(r.status).toHaveBeenCalledWith(500)
+    expect(r.json).toHaveBeenCalledWith({ error: 'internal' })
   })
 })
