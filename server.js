@@ -1,7 +1,7 @@
 import express from 'express'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { loadData, saveData } from './server/storage.js'
+import { loadData, saveData, migrateData } from './server/storage.js'
 import { todayStr } from './src/lib/calc.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -12,6 +12,7 @@ export function createApp({ dataPath, backupDir }) {
 
   app.get('/api/projects', (req, res) => {
     const { data, recoveredFrom } = loadData(dataPath, backupDir)
+    migrateData(data)
     res.json({ ...data, recoveredFrom })
   })
 

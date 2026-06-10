@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { loadData, saveData, DEFAULT_DATA } from '../server/storage.js'
+import { loadData, saveData, DEFAULT_DATA, migrateData } from '../server/storage.js'
 
 let dir, dataPath, backupDir
 
@@ -67,5 +67,26 @@ describe('loadData', () => {
     fs.writeFileSync(path.join(backupDir, 'other.json'), '{"projects":[]}')
     fs.writeFileSync(dataPath, '{ 깨진 JSON')
     expect(loadData(dataPath, backupDir).recoveredFrom).toBe('2026-06-06.json')
+  })
+})
+
+describe('migrateData', () => {
+  it('milestones 없는 initiative에 [] 추가', () => {
+    const data = {
+      projects: [{
+        id: 'p1', name: '테스트',
+        initiatives: [{ id: 'i1', name: '과제', tasks: [] }],
+      }],
+    }
+    migrateData(data)
+    expect(data.projects[0].initiatives[0].milestones).toEqual([])
+  })
+  it('이미 milestones 있으면 그대로 유지', () => {
+    const ms = [{ id: 'm1', name: '배포일', date: '2026-07-01' }]
+    const data = {
+      projects: [{ id: 'p1', initiatives: [{ id: 'i1', tasks: [], milestones: ms }] }],
+    }
+    migrateData(data)
+    expect(data.projects[0].initiatives[0].milestones).toBe(ms)
   })
 })

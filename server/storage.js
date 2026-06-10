@@ -48,3 +48,12 @@ function writeBackup(backupDir, json, today) {
     fs.unlinkSync(path.join(backupDir, f))
   }
 }
+
+export function migrateData(data) {
+  data.projects?.forEach((p) => {
+    p.initiatives?.forEach((i) => {
+      if (!i.milestones) i.milestones = []
+    })
+  })
+  return data
+}
