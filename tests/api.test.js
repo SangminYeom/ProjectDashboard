@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { loadProjects, createDebouncedSave } from '../src/api.js'
+import { AuthError } from '../src/auth-error.js'
 
 beforeEach(() => vi.useFakeTimers())
 afterEach(() => {
@@ -13,7 +14,7 @@ describe('loadProjects', () => {
     const payload = { projects: [{ id: 'p1' }], recoveredFrom: null }
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(payload) }))
     expect(await loadProjects()).toEqual(payload)
-    expect(fetch).toHaveBeenCalledWith('/api/projects')
+    expect(fetch).toHaveBeenCalledWith('/api/projects', { credentials: 'include' })
   })
   it('응답 실패 시 throw', async () => {
     vi.useRealTimers()
@@ -45,5 +46,33 @@ describe('createDebouncedSave', () => {
     save([])
     await vi.advanceTimersByTimeAsync(100)
     expect(onError.mock.calls.at(-1)[0]).toBeInstanceOf(Error)
+  })
+})
+
+describe('loadProjects — credentials & AuthError', () => {
+  it('credentials: include를 포함해 fetch한다', async () => {
+    vi.useRealTimers()
+    const payload = { projects: [], recoveredFrom: null }
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(payload) })
+    vi.stubGlobal('fetch', fetchMock)
+    await loadProjects()
+    expect(fetchMock).toHaveBeenCalledWith('/api/projects', { credentials: 'include' })
+  })
+
+  it('401 응답 시 AuthError를 throw한다', async () => {
+    vi.useRealTimers()
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 401 }))
+    await expect(loadProjects()).rejects.toBeInstanceOf(AuthError)
+  })
+})
+
+describe('createDebouncedSave — 401 처리', () => {
+  it('PUT 401 시 onError에 AuthError를 전달한다', async () => {
+    const onError = vi.fn()
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 401 }))
+    const save = createDebouncedSave({ delay: 100, onError })
+    save([])
+    await vi.advanceTimersByTimeAsync(100)
+    expect(onError.mock.calls.at(-1)[0]).toBeInstanceOf(AuthError)
   })
 })

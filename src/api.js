@@ -1,10 +1,14 @@
+import { AuthError } from './auth-error.js'
+
+export { AuthError }
+
 export async function loadProjects() {
-  const res = await fetch('/api/projects')
+  const res = await fetch('/api/projects', { credentials: 'include' })
+  if (res.status === 401) throw new AuthError()
   if (!res.ok) throw new Error(`로드 실패: ${res.status}`)
-  return res.json() // { projects, recoveredFrom }
+  return res.json()
 }
 
-// 변경 시마다 호출하면 delay 후 마지막 데이터만 저장
 export function createDebouncedSave({ delay = 500, onError } = {}) {
   let timer = null
   return function save(projects) {
@@ -15,7 +19,9 @@ export function createDebouncedSave({ delay = 500, onError } = {}) {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ projects }),
+          credentials: 'include',
         })
+        if (res.status === 401) { onError?.(new AuthError()); return }
         if (!res.ok) throw new Error(`저장 실패: ${res.status}`)
         onError?.(null)
       } catch (err) {
