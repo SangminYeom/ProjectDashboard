@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, forwardRef, Fragment } from 'react'
 import { toPng } from 'html-to-image'
 import KpiBar from '../components/KpiBar.jsx'
 import Initiatives from '../components/Initiatives.jsx'
@@ -27,6 +27,7 @@ export default function Project({ project, onChange, onDelete, onBack }) {
         a.href = dataUrl
         a.click()
       })
+      .catch((err) => console.error('PNG 내보내기 실패:', err))
   }
 
   return (
@@ -83,7 +84,7 @@ export default function Project({ project, onChange, onDelete, onBack }) {
   )
 }
 
-function ProjectSnapshot({ ref, project }) {
+const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
   const openConsid = project.considerations.filter((c) => c.status !== '해결')
   const sevDot = (s) => s === '높음' ? 'dot-red' : s === '중간' ? 'dot-amber' : 'dot-green'
 
@@ -122,11 +123,21 @@ function ProjectSnapshot({ ref, project }) {
             {project.initiatives.map((i) => {
               const prog = initiativeProgress(i)
               return (
-                <div key={i.id} className="ini-row">
-                  <span className="ini-name">{i.name}</span>
-                  <div className="ini-track"><div className="ini-fill" style={{ width: `${prog}%` }} /></div>
-                  <span className="ini-pct">{prog}%</span>
-                </div>
+                <Fragment key={i.id}>
+                  <div className="ini-row">
+                    <span className="ini-name">{i.name}</span>
+                    <div className="ini-track"><div className="ini-fill" style={{ width: `${prog}%` }} /></div>
+                    <span className="ini-pct">{prog}%</span>
+                  </div>
+                  {(i.milestones ?? []).map((m) => (
+                    <div key={m.id} className="ini-row">
+                      <span className="ini-name">
+                        <span style={{ color: '#f59e0b', marginRight: 4 }}>◆</span>{m.name}
+                      </span>
+                      <span className="ini-pct" style={{ color: '#b45309' }}>{m.date}</span>
+                    </div>
+                  ))}
+                </Fragment>
               )
             })}
           </div>
@@ -166,7 +177,7 @@ function ProjectSnapshot({ ref, project }) {
       )}
     </div>
   )
-}
+})
 
 function ProjectEditForm({ project, onSubmit, onClose }) {
   function handleSubmit(e) {

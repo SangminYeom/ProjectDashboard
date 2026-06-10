@@ -10,7 +10,11 @@ import Project from '../../src/pages/Project.jsx'
 const project = {
   id: 'p1', name: '차세대 시스템', description: '', startDate: '2026-01-01', endDate: '2026-12-31',
   kpis: [{ id: 'k1', name: '매출', type: 'numeric', target: 10, current: 7, unit: '억' }],
-  initiatives: [{ id: 'i1', name: '인프라 전환', description: '', owner: '', tasks: [] }],
+  initiatives: [{
+    id: 'i1', name: '인프라 전환', description: '', owner: '',
+    tasks: [],
+    milestones: [{ id: 'm1', name: '시스템 오픈', date: '2026-09-01' }],
+  }],
   operations: [{ id: 'o1', name: '주간 보고', cycle: '주', owner: '', status: '정상', memo: '' }],
   considerations: [{ id: 'c1', title: '계약 지연', content: '', response: '', severity: '높음', status: '열림', createdDate: '2026-06-01', resolvedDate: null }],
 }
@@ -55,4 +59,11 @@ it('하위 컴포넌트 변경이 onChange(updater)로 전파된다', () => {
 it('PNG 내보내기 버튼이 존재한다', () => {
   setup()
   expect(screen.getByRole('button', { name: 'PNG 내보내기' })).toBeInTheDocument()
+})
+
+it('ProjectSnapshot에 마일스톤 이름과 날짜가 표시된다', () => {
+  setup()
+  const snapshot = document.querySelector('.project-snapshot')
+  expect(snapshot.textContent).toContain('시스템 오픈')
+  expect(snapshot.textContent).toContain('2026-09-01')
 })
