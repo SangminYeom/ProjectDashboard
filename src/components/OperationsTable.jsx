@@ -50,7 +50,7 @@ export default function OperationsTable({ operations, onChange }) {
               </td>
               <td>
                 <button className="icon-btn" aria-label={`${o.name} 삭제`}
-                  onClick={() => confirm(`업무 '${o.name}'을(를) 삭제할까요?`) && onChange(operations.filter((x) => x.id !== o.id))}>✕</button>
+                  onClick={() => confirm(`업무 '${o.name}'을(를) 삭제할까요?`) && onChange(operations.filter((x) => x.id !== o.id))}>🗑️</button>
               </td>
             </tr>
           ))}

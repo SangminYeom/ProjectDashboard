@@ -58,8 +58,8 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 /* 카드 그리드 */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: 1fr;
+  gap: 20px;
 }
 .project-card {
   background: #fff; border-radius: 18px; padding: 26px 24px;
@@ -93,7 +93,7 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .ini-list { margin-bottom: 20px; }
 .ini-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .ini-row:last-child { margin-bottom: 0; }
-.ini-name { font-size: 12px; color: #1d1d1f; flex-shrink: 0; }
+.ini-name { font-size: 13px; color: #1d1d1f; flex-shrink: 0; }
 .ini-track { flex: 1; height: 2px; background: #e8e8ed; border-radius: 1px; overflow: hidden; min-width: 40px; }
 .ini-fill  { height: 100%; border-radius: 1px; background: #1d1d1f; }
 .ini-pct   { font-size: 11px; color: #86868b; flex-shrink: 0; width: 26px; text-align: right; }
@@ -102,25 +102,30 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .kpi-list { margin-bottom: 16px; }
 .kpi-row  { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
 .kpi-row:last-child { margin-bottom: 0; }
-.kpi-name  { font-size: 12px; color: #6e6e73; }
-.kpi-right { text-align: right; }
-.kpi-nums  { font-size: 11px; color: #86868b; display: block; }
+.kpi-name  { font-size: 13px; color: #6e6e73; }
+.kpi-right { display: flex; align-items: baseline; gap: 8px; }
+.kpi-nums  { font-size: 11px; color: #86868b; }
 .kpi-prog  { font-size: 12px; font-weight: 600; color: #0071e3; }
 .kpi-qual  { font-size: 12px; color: #6e6e73; }
 
 /* 섹션 칩 */
-.card-chip { background: #f5f5f7; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.card-chip { background: none; padding: 18px 0 6px; margin-bottom: 0; border-top: 1px solid #f0f0f2; }
+.card-chip:first-of-type { border-top: none; padding-top: 4px; }
 .card-chip .sec {
-  color: #3a3a3c; font-size: 10px;
-  border-bottom: 1px solid #dcdce0; padding-bottom: 7px; margin-bottom: 10px;
+  display: inline-block;
+  font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none;
+  color: #3a3a3c; background: #e8e8ed;
+  border-radius: 20px; padding: 3px 10px;
+  margin-bottom: 10px;
 }
 .card-chip .ini-list { margin-bottom: 0; }
 .card-chip .kpi-list { margin-bottom: 0; }
 
+
 /* 홈 카드 운영업무 */
 .op-list { display: flex; flex-direction: column; gap: 7px; }
 .op-row { display: flex; align-items: center; gap: 8px; }
-.op-item-name { font-size: 12px; color: #1d1d1f; flex: 1; }
+.op-item-name { font-size: 13px; color: #1d1d1f; flex: 1; }
 .op-item-cycle { font-size: 11px; color: #86868b; }
 
 /* 카드 푸터 */
@@ -134,10 +139,9 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .dot-red   { background: #ff3b30; }
 
 /* ===== KPI 바 ===== */
-.kpi-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+.kpi-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
 .kpi-card {
   background: #fff; border-radius: 14px; padding: 18px 20px;
-  min-width: 160px; flex: 1; max-width: 240px;
   box-shadow: 0 2px 8px rgba(0,0,0,.04), 0 0 1px rgba(0,0,0,.06);
 }
 .kpi-card.drag-over { outline: 2px solid #0071e3; outline-offset: -2px; }
@@ -146,13 +150,15 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
   border: 1.5px dashed #d2d2d7; box-shadow: none;
 }
 .kpi-head {
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 14px; font-weight: 600; color: #1d1d1f; margin-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8px; margin-bottom: 14px;
 }
-.kpi-rate { font-size: 26px; font-weight: 700; color: #1d1d1f; margin-bottom: 6px; }
+.kpi-title { font-size: 14px; font-weight: 600; color: #1d1d1f; flex: 1; line-height: 1.35; }
+.kpi-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.kpi-rate { font-size: 28px; font-weight: 700; color: #1d1d1f; margin-bottom: 4px; letter-spacing: -.5px; }
 .kpi-detail {
   font-size: 12px; color: #86868b;
-  display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
 }
 .kpi-detail input { width: 72px; padding: 3px 6px; font-size: 13px; }
 .gauge { background: #e8e8ed; height: 4px; border-radius: 2px; overflow: hidden; }

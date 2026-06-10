@@ -36,12 +36,14 @@ export default function KpiBar({ kpis, onChange }) {
             onDragEnd={() => { dragIdx.current = null; setDragOver(null) }}
           >
             <div className="kpi-head">
-              <span className="drag-handle" aria-hidden="true">⠿</span>
-              <strong>{k.name}</strong>
-              <button className="icon-btn" aria-label={`${k.name} 수정`}
-                onClick={() => setEditingKpi(k)}>✏</button>
-              <button className="icon-btn" aria-label={`${k.name} 삭제`}
-                onClick={() => confirm(`KPI '${k.name}'을(를) 삭제할까요?`) && onChange(kpis.filter((x) => x.id !== k.id))}>✕</button>
+              <strong className="kpi-title">{k.name}</strong>
+              <div className="kpi-actions">
+                <span className="drag-handle" aria-hidden="true">⠿</span>
+                <button className="icon-btn" aria-label={`${k.name} 수정`}
+                  onClick={() => setEditingKpi(k)}>✏️</button>
+                <button className="icon-btn" aria-label={`${k.name} 삭제`}
+                  onClick={() => confirm(`KPI '${k.name}'을(를) 삭제할까요?`) && onChange(kpis.filter((x) => x.id !== k.id))}>🗑️</button>
+              </div>
             </div>
             {k.type === 'numeric' ? (
               <>
@@ -50,9 +52,6 @@ export default function KpiBar({ kpis, onChange }) {
                   <input type="number" value={k.current} aria-label={`${k.name} 현재값`}
                     onChange={(e) => update(k.id, { current: Number(e.target.value) || 0 })} />
                   <span>/ {k.target}{k.unit}</span>
-                </div>
-                <div className="gauge">
-                  <div className="gauge-fill" style={{ width: `${Math.min(100, rate)}%` }} />
                 </div>
               </>
             ) : (

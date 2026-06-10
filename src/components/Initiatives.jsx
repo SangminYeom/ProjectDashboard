@@ -53,12 +53,12 @@ export default function Initiatives({ initiatives, onChange }) {
                 {init.owner ? ` · 담당 ${init.owner}` : ''}
               </span>
               <button className="icon-btn" aria-label={`${init.name} 수정`}
-                onClick={(e) => { e.stopPropagation(); setEditingInit(init) }}>✏</button>
+                onClick={(e) => { e.stopPropagation(); setEditingInit(init) }}>✏️</button>
               <button className="icon-btn" aria-label={`${init.name} 삭제`}
                 onClick={(e) => {
                   e.stopPropagation()
                   confirm(`과제 '${init.name}'을(를) 삭제할까요?`) && onChange(initiatives.filter((x) => x.id !== init.id))
-                }}>✕</button>
+                }}>🗑️</button>
             </div>
             {!collapsed[init.id] && (
               <div className="initiative-body">
