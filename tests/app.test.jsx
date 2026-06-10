@@ -16,6 +16,8 @@ vi.mock('../src/api.js', () => ({
 }))
 
 import App from '../src/App.jsx'
+import { loadProjects } from '../src/api.js'
+import { AuthError } from '../src/auth-error.js'
 
 it('로드 후 홈 화면을 보여준다', async () => {
   render(<App />)
@@ -39,4 +41,10 @@ it('데이터 변경 시 디바운스 저장이 호출된다', async () => {
   fireEvent.click(screen.getByRole('button', { name: '추가' }))
   await waitFor(() => expect(saveMock).toHaveBeenCalled())
   expect(saveMock.mock.calls.at(-1)[0]).toHaveLength(2)
+})
+
+it('loadProjects가 AuthError를 throw하면 로그인 화면을 표시한다', async () => {
+  loadProjects.mockRejectedValueOnce(new AuthError())
+  render(<App />)
+  expect(await screen.findByRole('button', { name: '로그인' })).toBeInTheDocument()
 })
