@@ -216,7 +216,7 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .task-name-text { font-size: 13px; color: #1d1d1f; word-break: keep-all; line-height: 1.4; }
 .task-progress { width: 70px; flex-shrink: 0; font-size: 13px; color: #86868b; }
 .task-progress input { width: 52px; padding: 2px 4px; font-size: 12px; }
-.gantt-track { position: relative; flex: 1; height: 4px; background: #e8e8ed; border-radius: 2px; overflow: hidden; }
+.gantt-track { position: relative; flex: 1; height: 4px; background: #e8e8ed; border-radius: 2px; overflow: visible; }
 .gantt-bar { position: absolute; top: 0; height: 4px; border-radius: 2px; }
 .gantt-bar.done        { background: #30d158; }
 .gantt-bar.active      { background: #0071e3; }
@@ -227,14 +227,57 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
   left: 0; width: 100%;
   background: repeating-linear-gradient(90deg, #d2d2d7 0, #d2d2d7 3px, transparent 3px, transparent 8px);
 }
-.today-line { position: absolute; top: -6px; width: 1.5px; height: 16px; background: #0071e3; opacity: .7; }
+.today-marker {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+}
+.today-marker::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, #ff3b30, rgba(255, 59, 48, .35));
+  border-radius: 1px;
+}
+.today-marker-pill {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #fff;
+  background: #ff3b30;
+  padding: 2px 7px;
+  border-radius: 20px;
+  white-space: nowrap;
+  line-height: 1.4;
+  box-shadow: 0 1px 4px rgba(255, 59, 48, .4), 0 0 0 2px rgba(255, 59, 48, .12);
+  letter-spacing: 0.3px;
+}
+.today-marker-pill::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 3.5px solid transparent;
+  border-top-color: #ff3b30;
+}
 .task-status { width: 56px; flex-shrink: 0; font-size: 12px; color: #86868b; }
 .task-status.delayed { color: #ff3b30; font-weight: 600; }
 .gantt-row.unscheduled .task-name-text { color: #c7c7cc; }
 .gantt-row.unscheduled .task-status { color: #c7c7cc; }
 
 /* 간트 날짜 헤더 */
-.gantt-header-row { padding-bottom: 8px; border-bottom: 1px solid #f0f0f2; margin-bottom: 4px; }
+.gantt-header-row { padding-top: 14px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f2; margin-bottom: 4px; }
 .gantt-track--header {
   display: flex; align-items: center; height: 18px;
   background: none; overflow: visible; position: relative;
@@ -247,7 +290,6 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 }
 .gantt-axis-first { flex: 0.5; text-align: left; overflow: visible; }
 .gantt-axis-last  { flex: 0.5; text-align: right; overflow: visible; }
-.gantt-today-header { height: 18px; top: 0; opacity: .5; }
 .gantt-btn-spacer { width: 60px; flex-shrink: 0; }
 
 /* 마일스톤 */

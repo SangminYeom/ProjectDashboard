@@ -56,7 +56,9 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, milestones
                 {label}
               </span>
             ))}
-            <span className="today-line gantt-today-header" style={{ left: `${leftPct(today)}%` }} />
+            <span className="today-marker" style={{ left: `${leftPct(today)}%` }}>
+              <span className="today-marker-pill">오늘</span>
+            </span>
           </span>
           <span className="task-status" />
           <span className="gantt-btn-spacer" />
@@ -96,7 +98,6 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, milestones
                 ) : (
                   <span className="gantt-bar unscheduled" title="일정미정" />
                 )}
-                <span className="today-line" style={{ left: `${leftPct(today)}%` }} title={`오늘 ${today}`} />
               </span>
               <span className={`task-status ${delayed ? 'delayed' : ''}`}>{delayed ? '⚠ 지연' : hasDate(t) ? t.status : '일정미정'}</span>
               <button className="icon-btn" aria-label={`${t.name} 수정`}
@@ -135,7 +136,6 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, milestones
                   title={m.date}
                 />
               )}
-              <span className="today-line" style={{ left: `${leftPct(today)}%` }} />
             </span>
             <span className="milestone-badge">◆ 마일스톤</span>
             <button className="icon-btn" aria-label={`${m.name} 수정`}
