@@ -18,7 +18,8 @@ await sql`
 `
 
 // 기존 데이터 마이그레이션
-const raw = fs.readFileSync('data/projects.json', 'utf8')
+const jsonPath = new URL('../data/projects.json', import.meta.url)
+const raw = fs.readFileSync(jsonPath, 'utf8')
 const data = JSON.parse(raw)
 
 await sql`

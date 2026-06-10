@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'node:crypto'
 import { createToken } from '../_auth.js'
 
 export default function handler(req, res) {
@@ -8,7 +9,10 @@ export default function handler(req, res) {
   }
 
   const { password } = req.body ?? {}
-  if (!password || password !== process.env.ACCESS_CODE) {
+  const a = Buffer.from(String(password ?? ''))
+  const b = Buffer.from(process.env.ACCESS_CODE)
+  const match = a.length === b.length && timingSafeEqual(a, b)
+  if (!password || !match) {
     return res.status(401).json({ error: 'unauthorized' })
   }
 

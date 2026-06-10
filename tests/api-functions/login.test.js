@@ -47,6 +47,13 @@ describe('POST /api/auth/login', () => {
     expect(r.status).toHaveBeenCalledWith(500)
   })
 
+  it('body 없이 POST하면 401을 반환한다', () => {
+    const r = res()
+    handler({ method: 'POST', body: null }, r)
+    expect(r.status).toHaveBeenCalledWith(401)
+    expect(r.json).toHaveBeenCalledWith({ error: 'unauthorized' })
+  })
+
   it('GET 요청은 405를 반환한다', () => {
     const r = res()
     handler(req('GET'), r)
