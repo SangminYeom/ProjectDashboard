@@ -78,15 +78,17 @@ describe('migrateData', () => {
         initiatives: [{ id: 'i1', name: '과제', tasks: [] }],
       }],
     }
-    migrateData(data)
-    expect(data.projects[0].initiatives[0].milestones).toEqual([])
+    const { data: result, changed } = migrateData(data)
+    expect(result.projects[0].initiatives[0].milestones).toEqual([])
+    expect(changed).toBe(true)
   })
   it('이미 milestones 있으면 그대로 유지', () => {
     const ms = [{ id: 'm1', name: '배포일', date: '2026-07-01' }]
     const data = {
       projects: [{ id: 'p1', initiatives: [{ id: 'i1', tasks: [], milestones: ms }] }],
     }
-    migrateData(data)
-    expect(data.projects[0].initiatives[0].milestones).toBe(ms)
+    const { data: result, changed } = migrateData(data)
+    expect(result.projects[0].initiatives[0].milestones).toBe(ms)
+    expect(changed).toBe(false)
   })
 })

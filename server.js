@@ -12,7 +12,8 @@ export function createApp({ dataPath, backupDir }) {
 
   app.get('/api/projects', (req, res) => {
     const { data, recoveredFrom } = loadData(dataPath, backupDir)
-    migrateData(data)
+    const { changed } = migrateData(data)
+    if (changed) saveData(dataPath, data, backupDir, todayStr())
     res.json({ ...data, recoveredFrom })
   })
 

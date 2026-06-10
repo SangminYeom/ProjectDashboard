@@ -50,10 +50,11 @@ function writeBackup(backupDir, json, today) {
 }
 
 export function migrateData(data) {
+  let changed = false
   data.projects?.forEach((p) => {
     p.initiatives?.forEach((i) => {
-      if (!i.milestones) i.milestones = []
+      if (!i.milestones) { i.milestones = []; changed = true }
     })
   })
-  return data
+  return { data, changed }
 }
