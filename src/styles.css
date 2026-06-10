@@ -219,11 +219,25 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .gantt-btn-spacer { width: 60px; flex-shrink: 0; }
 
 /* ===== 운영업무 테이블 ===== */
-.op-table { width: 100%; background: #fff; border-collapse: collapse; border-radius: 10px; overflow: hidden; }
-.op-table th { text-align: left; font-size: 13px; color: #6b7280; padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
-.op-table td { padding: 8px 12px; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
-.op-table input { width: 100%; border-color: transparent; background: transparent; }
-.op-table input:focus { border-color: #d1d5db; background: #fff; }
+.op-section {
+  background: #fff; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04), 0 0 1px rgba(0,0,0,.06);
+  margin-bottom: 16px;
+}
+.op-table { width: 100%; border-collapse: collapse; }
+.op-table th {
+  text-align: left; font-size: 9.5px; font-weight: 600;
+  letter-spacing: 1.4px; text-transform: uppercase; color: #86868b;
+  padding: 14px 16px; border-bottom: 1px solid #f0f0f2;
+}
+.op-table td { padding: 10px 16px; border-bottom: 1px solid #f0f0f2; font-size: 13px; }
+.op-table tr:last-child td { border-bottom: none; }
+.op-table input, .op-table select {
+  width: 100%; border-color: transparent; background: transparent; font-size: 13px;
+}
+.op-table input:focus, .op-table select:focus { border-color: #d2d2d7; background: #fff; }
+.op-status-cell { display: flex; align-items: center; gap: 7px; }
+.op-status-cell select { width: auto; }
 
 /* ===== 고려사항 ===== */
 .consideration { background: #fff; border: 1px solid #e5e7eb; border-left-width: 4px; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; }

@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import Modal from './Modal.jsx'
-import { todayStr } from '../lib/calc.js'
 
 const CYCLES = ['일', '주', '월', '분기']
 const OP_STATUS = ['정상', '주의', '이슈']
-const OP_ICON = { 정상: '🟢', 주의: '🟡', 이슈: '🔴' }
+const OP_DOT = { 정상: 'dot-green', 주의: 'dot-amber', 이슈: 'dot-red' }
 
 export default function OperationsTable({ operations, onChange }) {
   const [adding, setAdding] = useState(false)
@@ -14,27 +13,36 @@ export default function OperationsTable({ operations, onChange }) {
   }
 
   return (
-    <section>
+    <section className="op-section">
       <table className="op-table">
         <thead>
-          <tr><th>업무</th><th>주기</th><th>담당</th><th>상태</th><th>최근 수행</th><th>메모</th><th /></tr>
+          <tr><th>업무</th><th>주기</th><th>담당</th><th>상태</th><th>메모</th><th /></tr>
         </thead>
         <tbody>
           {operations.map((o) => (
             <tr key={o.id}>
-              <td>{o.name}</td>
-              <td>{o.cycle}</td>
-              <td>{o.owner}</td>
               <td>
-                <select value={o.status} aria-label={`${o.name} 상태`}
-                  onChange={(e) => update(o.id, { status: e.target.value })}>
-                  {OP_STATUS.map((s) => <option key={s} value={s}>{OP_ICON[s]} {s}</option>)}
+                <input value={o.name} aria-label={`${o.name} 업무명`}
+                  onChange={(e) => update(o.id, { name: e.target.value })} />
+              </td>
+              <td>
+                <select value={o.cycle} aria-label={`${o.name} 주기`}
+                  onChange={(e) => update(o.id, { cycle: e.target.value })}>
+                  {CYCLES.map((c) => <option key={c}>{c}</option>)}
                 </select>
               </td>
               <td>
-                <span>{o.lastPerformed || '—'}</span>
-                <button className="link-btn" aria-label={`${o.name} 오늘 수행`}
-                  onClick={() => update(o.id, { lastPerformed: todayStr() })}>오늘 수행</button>
+                <input value={o.owner} aria-label={`${o.name} 담당자`}
+                  onChange={(e) => update(o.id, { owner: e.target.value })} />
+              </td>
+              <td>
+                <div className="op-status-cell">
+                  <span className={`dot ${OP_DOT[o.status] ?? 'dot-amber'}`} />
+                  <select value={o.status} aria-label={`${o.name} 상태`}
+                    onChange={(e) => update(o.id, { status: e.target.value })}>
+                    {['정상', '주의', '이슈'].map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
               </td>
               <td>
                 <input value={o.memo} aria-label={`${o.name} 메모`}
@@ -66,7 +74,7 @@ function OperationForm({ onSubmit, onClose }) {
     const f = new FormData(e.target)
     onSubmit({
       name: f.get('name'), cycle: f.get('cycle'), owner: f.get('owner'),
-      status: '정상', lastPerformed: '', memo: f.get('memo'),
+      status: '정상', memo: f.get('memo'),
     })
   }
   return (
