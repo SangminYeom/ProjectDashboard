@@ -1,32 +1,20 @@
 import { useState } from 'react'
 import Modal from '../components/Modal.jsx'
-import {
-  kpiRate, initiativeProgress, countDelayedTasks, countOpenConsiderations, todayStr,
-} from '../lib/calc.js'
+import { kpiRate, initiativeProgress } from '../lib/calc.js'
 
 export default function Home({ projects, onOpen, onChange }) {
   const [adding, setAdding] = useState(false)
-  const today = todayStr()
-  const delayed = projects.reduce((n, p) => n + countDelayedTasks(p, today), 0)
-  const open    = projects.reduce((n, p) => n + countOpenConsiderations(p), 0)
 
   return (
     <div className="home">
       <header className="home-header">
         <h1 className="home-title">고객가치혁신유닛 Project Dashboard</h1>
-        <div className="home-stats">
-          <span className="home-stat">{projects.length}개</span>
-          {delayed > 0 && (
-            <><span className="home-stat-div" /><span className="home-stat home-stat--warn"><span className="dot dot-amber" /> 지연 {delayed}건</span></>
-          )}
-          {open > 0 && (
-            <><span className="home-stat-div" /><span className="home-stat home-stat--issue"><span className="dot dot-red" /> 미해결 {open}건</span></>
-          )}
-        </div>
       </header>
 
       <div className="card-grid">
         {projects.map((p) => {
+          const openConsid = p.considerations.filter((c) => c.status !== '해결')
+          const sevDot = (s) => s === '높음' ? 'dot-red' : s === '중간' ? 'dot-amber' : 'dot-green'
           return (
             <button key={p.id} className="project-card" onClick={() => onOpen(p.id)}>
               <div className="card-head">
@@ -35,24 +23,6 @@ export default function Home({ projects, onOpen, onChange }) {
                   {p.startDate.slice(0, 7)} – {p.endDate.slice(0, 7)}
                 </div>
               </div>
-
-              {p.initiatives.length > 0 && (
-                <div className="card-chip">
-                  <div className="sec">중점수행과제</div>
-                  <div className="ini-list">
-                    {p.initiatives.map((i) => {
-                      const prog = initiativeProgress(i)
-                      return (
-                        <div key={i.id} className="ini-row">
-                          <span className="ini-name">{i.name}</span>
-                          <div className="ini-track"><div className="ini-fill" style={{ width: `${prog}%` }} /></div>
-                          <span className="ini-pct">{prog}%</span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
 
               {p.kpis.length > 0 && (
                 <div className="card-chip">
@@ -75,6 +45,24 @@ export default function Home({ projects, onOpen, onChange }) {
                 </div>
               )}
 
+              {p.initiatives.length > 0 && (
+                <div className="card-chip">
+                  <div className="sec">중점수행과제</div>
+                  <div className="ini-list">
+                    {p.initiatives.map((i) => {
+                      const prog = initiativeProgress(i)
+                      return (
+                        <div key={i.id} className="ini-row">
+                          <span className="ini-name">{i.name}</span>
+                          <div className="ini-track"><div className="ini-fill" style={{ width: `${prog}%` }} /></div>
+                          <span className="ini-pct">{prog}%</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
               {p.operations.length > 0 && (
                 <div className="card-chip">
                   <div className="sec">운영업무</div>
@@ -93,14 +81,19 @@ export default function Home({ projects, onOpen, onChange }) {
                 </div>
               )}
 
-              {(() => {
-                const n = p.considerations.filter((c) => c.status !== '해결').length
-                return n > 0 ? (
-                  <div className="card-footer">
-                    <span className="stat"><span className="dot dot-red" /> 미해결 고려사항 {n}건</span>
+              {openConsid.length > 0 && (
+                <div className="card-chip">
+                  <div className="sec">고려사항</div>
+                  <div className="op-list">
+                    {openConsid.map((c) => (
+                      <div key={c.id} className="op-row">
+                        <span className={`dot ${sevDot(c.severity)}`} />
+                        <span className="op-item-name">{c.title}</span>
+                      </div>
+                    ))}
                   </div>
-                ) : null
-              })()}
+                </div>
+              )}
             </button>
           )
         })}

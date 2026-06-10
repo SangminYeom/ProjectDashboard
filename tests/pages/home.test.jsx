@@ -23,10 +23,9 @@ function setup() {
   return { onOpen, onChange }
 }
 
-it('페이지 제목과 요약 통계를 표시한다', () => {
+it('페이지 제목을 표시한다', () => {
   setup()
   expect(screen.getByText('고객가치혁신유닛 Project Dashboard')).toBeInTheDocument()
-  expect(screen.getByText('1개')).toBeInTheDocument()
 })
 
 it('카드에 이름·과제명·KPI 수치 포맷을 표시한다', () => {

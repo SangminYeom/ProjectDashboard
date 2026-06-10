@@ -79,7 +79,7 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 
 /* 카드 내부 */
 .card-head { margin-bottom: 20px; }
-.card-name { font-size: 16px; font-weight: 600; color: #1d1d1f; letter-spacing: -.4px; }
+.card-name { font-size: 18px; font-weight: 600; color: #1d1d1f; letter-spacing: -.4px; }
 .card-period { font-size: 12px; color: #86868b; margin-top: 3px; }
 
 /* 섹션 레이블 (홈 카드 + 상세 공통) */
@@ -109,7 +109,10 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 
 /* 섹션 칩 */
 .card-chip { background: #f5f5f7; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
-.card-chip .sec { margin-bottom: 8px; }
+.card-chip .sec {
+  color: #3a3a3c; font-size: 10px;
+  border-bottom: 1px solid #dcdce0; padding-bottom: 7px; margin-bottom: 10px;
+}
 .card-chip .ini-list { margin-bottom: 0; }
 .card-chip .kpi-list { margin-bottom: 0; }
 
