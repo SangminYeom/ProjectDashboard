@@ -8,7 +8,8 @@ export default function Home({ projects, onOpen, onChange }) {
   return (
     <div className="home">
       <header className="home-header">
-        <h1 className="home-title">고객가치혁신유닛 Project Dashboard</h1>
+        <h1 className="home-title">'26년 Project 목표 관리</h1>
+        <p className="home-subtitle">고객가치혁신유닛</p>
       </header>
 
       <div className="card-grid">

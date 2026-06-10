@@ -25,7 +25,8 @@ function setup() {
 
 it('페이지 제목을 표시한다', () => {
   setup()
-  expect(screen.getByText('고객가치혁신유닛 Project Dashboard')).toBeInTheDocument()
+  expect(screen.getByText("'26년 Project 목표 관리")).toBeInTheDocument()
+  expect(screen.getByText('고객가치혁신유닛')).toBeInTheDocument()
 })
 
 it('카드에 이름·과제명·KPI 수치 포맷을 표시한다', () => {

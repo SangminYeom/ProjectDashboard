@@ -27,7 +27,7 @@ it('카드 클릭 → 상세 → 뒤로 가기', async () => {
   fireEvent.click(await screen.findByText('차세대 시스템'))
   expect(screen.getByRole('button', { name: '← 홈' })).toBeInTheDocument()
   fireEvent.click(screen.getByRole('button', { name: '← 홈' }))
-  expect(screen.getByText('고객가치혁신유닛 Project Dashboard')).toBeInTheDocument()
+  expect(screen.getByText("'26년 Project 목표 관리")).toBeInTheDocument()
 })
 
 it('데이터 변경 시 디바운스 저장이 호출된다', async () => {

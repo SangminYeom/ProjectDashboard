@@ -48,6 +48,7 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 /* ===== 홈 ===== */
 .home-header { margin-bottom: 40px; }
 .home-title { font-size: 30px; font-weight: 700; letter-spacing: -.6px; color: #1d1d1f; }
+.home-subtitle { margin: 4px 0 0; font-size: 14px; font-weight: 400; color: #86868b; letter-spacing: 0; }
 .home-stats { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 13px; color: #6e6e73; }
 .home-stat { display: flex; align-items: center; gap: 5px; }
 .home-stat--warn  { color: #ff9f0a; }
