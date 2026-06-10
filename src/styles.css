@@ -45,96 +45,77 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 }
 .link-btn:hover { text-decoration: underline; }
 
-/* ===== 홈: 카드 그리드 ===== */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+/* ===== 홈 ===== */
+.home-header { margin-bottom: 40px; }
+.home-title { font-size: 30px; font-weight: 700; letter-spacing: -.6px; color: #1d1d1f; }
+.home-stats { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 13px; color: #6e6e73; }
+.home-stat { display: flex; align-items: center; gap: 5px; }
+.home-stat--warn  { color: #ff9f0a; }
+.home-stat--issue { color: #ff3b30; }
+.home-stat-div { width: 1px; height: 12px; background: #d2d2d7; }
+
+/* 카드 그리드 */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
 .project-card {
-  background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px;
-  text-align: left; box-shadow: 0 1px 3px rgba(0,0,0,.06); transition: box-shadow .15s;
+  background: #fff; border-radius: 18px; padding: 26px 24px;
+  text-align: left; border: none; width: 100%;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04), 0 0 1px rgba(0,0,0,.06);
+  transition: transform .2s ease, box-shadow .2s ease; cursor: pointer;
 }
-.project-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.1); }
-.project-card-top { margin-bottom: 4px; }
-.project-card h2 { font-size: 17px; font-weight: 700; margin: 0 0 3px; color: #0f172a; }
-/* 카드 내 구획 (KPI / 중점수행과제) */
-.card-section { margin-top: 12px; padding-top: 10px; border-top: 1px solid #eef0f3; }
-.card-section-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 8px;
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,.08), 0 0 1px rgba(0,0,0,.06);
 }
-.card-section-badge {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 4px;
-}
-.card-section-badge--kpi {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-.card-section-badge--initiative {
-  background: #f0fdf4;
-  color: #15803d;
-}
-.card-section-badge--operation {
-  background: #fff7ed;
-  color: #c2410c;
-}
-.card-section-badge--consideration {
-  background: #fef2f2;
-  color: #dc2626;
-}
-.card-section-count { font-size: 11px; color: #9ca3af; font-weight: 500; }
-/* 섹션 내용 들여쓰기 */
-.card-section-content {
-  padding-left: 10px;
-  border-left: 2px solid #e5e7eb;
-}
-.card-section--kpi .card-section-content { border-left-color: #bfdbfe; }
-.card-section--initiative .card-section-content { border-left-color: #bbf7d0; }
-/* KPI 진행바 색상 변형 */
-.ini-fill--kpi { background: #2563eb; }
-
-.kpi-summary { display: flex; flex-direction: column; gap: 9px; }
-.kpi-sum-row { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
-.kpi-sum-head { display: flex; align-items: baseline; gap: 6px; }
-.kpi-sum-name { flex: 1; min-width: 0; font-weight: 600; color: #374151; word-break: keep-all; }
-.kpi-sum-fig { color: #6b7280; font-variant-numeric: tabular-nums; }
-.kpi-sum-val { flex: 0 0 auto; font-weight: 700; color: #1f2937; font-variant-numeric: tabular-nums; }
-.kpi-sum-status { flex: 0 0 auto; color: #374151; }
-.ini-summary { display: flex; flex-direction: column; gap: 5px; }
-.card-empty { font-size: 12px; color: #9ca3af; margin: 0; }
-.ini-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #4b5563; }
-.ini-name { flex: 0 0 42%; min-width: 0; word-break: keep-all; line-height: 1.4; }
-.ini-track { flex: 1; height: 6px; background: #eef0f3; border-radius: 4px; overflow: hidden; }
-.ini-fill { display: block; height: 100%; background: #3b82f6; border-radius: 4px; }
-.ini-pct { flex: 0 0 34px; text-align: right; color: #374151; font-variant-numeric: tabular-nums; }
-
-/* 운영업무 상태 요약 */
-.op-status-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.op-status-chip { font-size: 11px; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
-.op-status-chip--정상 { background: #f0fdf4; color: #15803d; }
-.op-status-chip--주의 { background: #fffbeb; color: #b45309; }
-.op-status-chip--이슈 { background: #fef2f2; color: #dc2626; }
-
-/* 고려사항 요약 */
-.consid-summary { display: flex; flex-direction: column; gap: 4px; }
-.consid-row { display: flex; align-items: baseline; gap: 6px; font-size: 12px; }
-.consid-sev { flex-shrink: 0; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
-.consid-sev.sev-high { background: #fee2e2; color: #991b1b; }
-.consid-sev.sev-mid  { background: #fef3c7; color: #92400e; }
-.consid-sev.sev-low  { background: #f3f4f6; color: #4b5563; }
-.consid-title { color: #374151; word-break: keep-all; line-height: 1.4; }
 .add-card {
   display: flex; align-items: center; justify-content: center;
-  color: #6b7280; border-style: dashed; font-size: 15px; min-height: 120px;
+  min-height: 160px; font-size: 14px; color: #86868b; font-weight: 500;
+  border: 1.5px dashed #d2d2d7; box-shadow: none;
 }
-.badges { display: flex; gap: 6px; }
-.badge { font-size: 12px; padding: 2px 8px; border-radius: 10px; }
-.badge-warn { background: #fef3c7; color: #92400e; }
-.badge-issue { background: #fee2e2; color: #991b1b; }
+.add-card:hover { border-color: #86868b; transform: none; box-shadow: none; }
+
+/* 카드 내부 */
+.card-head { margin-bottom: 20px; }
+.card-name { font-size: 16px; font-weight: 600; color: #1d1d1f; letter-spacing: -.4px; }
+.card-period { font-size: 12px; color: #86868b; margin-top: 3px; }
+
+/* 섹션 레이블 (홈 카드 + 상세 공통) */
+.sec {
+  font-size: 9.5px; font-weight: 600; letter-spacing: 1.6px;
+  text-transform: uppercase; color: #86868b; margin-bottom: 10px;
+}
+
+/* 중점수행과제 리스트 */
+.ini-list { margin-bottom: 20px; }
+.ini-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.ini-row:last-child { margin-bottom: 0; }
+.ini-name { font-size: 12px; color: #1d1d1f; flex-shrink: 0; }
+.ini-track { flex: 1; height: 2px; background: #e8e8ed; border-radius: 1px; overflow: hidden; min-width: 40px; }
+.ini-fill  { height: 100%; border-radius: 1px; background: #1d1d1f; }
+.ini-pct   { font-size: 11px; color: #86868b; flex-shrink: 0; width: 26px; text-align: right; }
+
+/* KPI 리스트 (홈 카드) */
+.kpi-list { margin-bottom: 16px; }
+.kpi-row  { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.kpi-row:last-child { margin-bottom: 0; }
+.kpi-name  { font-size: 12px; color: #6e6e73; }
+.kpi-right { text-align: right; }
+.kpi-nums  { font-size: 11px; color: #86868b; display: block; }
+.kpi-prog  { font-size: 12px; font-weight: 600; color: #0071e3; }
+.kpi-qual  { font-size: 12px; color: #6e6e73; }
+
+/* 카드 푸터 */
+.card-footer { display: flex; gap: 14px; padding-top: 14px; border-top: 1px solid #f0f0f2; flex-wrap: wrap; }
+.stat { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #86868b; }
+
+/* 상태 dot (공통) */
+.dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+.dot-green { background: #30d158; }
+.dot-amber { background: #ff9f0a; }
+.dot-red   { background: #ff3b30; }
 
 /* ===== KPI 바 ===== */
 .kpi-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
