@@ -107,8 +107,20 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .kpi-prog  { font-size: 12px; font-weight: 600; color: #0071e3; }
 .kpi-qual  { font-size: 12px; color: #6e6e73; }
 
+/* 섹션 칩 */
+.card-chip { background: #f5f5f7; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.card-chip .sec { margin-bottom: 8px; }
+.card-chip .ini-list { margin-bottom: 0; }
+.card-chip .kpi-list { margin-bottom: 0; }
+
+/* 홈 카드 운영업무 */
+.op-list { display: flex; flex-direction: column; gap: 7px; }
+.op-row { display: flex; align-items: center; gap: 8px; }
+.op-item-name { font-size: 12px; color: #1d1d1f; flex: 1; }
+.op-item-cycle { font-size: 11px; color: #86868b; }
+
 /* 카드 푸터 */
-.card-footer { display: flex; gap: 14px; padding-top: 14px; border-top: 1px solid #f0f0f2; flex-wrap: wrap; }
+.card-footer { display: flex; gap: 14px; padding-top: 10px; border-top: 1px solid #f0f0f2; flex-wrap: wrap; margin-top: 4px; }
 .stat { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #86868b; }
 
 /* 상태 dot (공통) */

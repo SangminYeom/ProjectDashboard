@@ -37,7 +37,7 @@ export default function Home({ projects, onOpen, onChange }) {
               </div>
 
               {p.initiatives.length > 0 && (
-                <>
+                <div className="card-chip">
                   <div className="sec">중점수행과제</div>
                   <div className="ini-list">
                     {p.initiatives.map((i) => {
@@ -51,11 +51,11 @@ export default function Home({ projects, onOpen, onChange }) {
                       )
                     })}
                   </div>
-                </>
+                </div>
               )}
 
               {p.kpis.length > 0 && (
-                <>
+                <div className="card-chip">
                   <div className="sec">KPI</div>
                   <div className="kpi-list">
                     {p.kpis.map((k) => (
@@ -72,21 +72,35 @@ export default function Home({ projects, onOpen, onChange }) {
                       </div>
                     ))}
                   </div>
-                </>
+                </div>
               )}
 
-              <div className="card-footer">
-                {['정상', '주의', '이슈'].map((s) => {
-                  const cnt = p.operations.filter((o) => o.status === s).length
-                  if (!cnt) return null
-                  const cls = s === '정상' ? 'dot-green' : s === '주의' ? 'dot-amber' : 'dot-red'
-                  return <span key={s} className="stat"><span className={`dot ${cls}`} /> 운영 {s} {cnt}</span>
-                })}
-                {(() => {
-                  const n = p.considerations.filter((c) => c.status !== '해결').length
-                  return n > 0 ? <span className="stat"><span className="dot dot-red" /> 고려 {n}건</span> : null
-                })()}
-              </div>
+              {p.operations.length > 0 && (
+                <div className="card-chip">
+                  <div className="sec">운영업무</div>
+                  <div className="op-list">
+                    {p.operations.map((o) => {
+                      const cls = o.status === '정상' ? 'dot-green' : o.status === '주의' ? 'dot-amber' : 'dot-red'
+                      return (
+                        <div key={o.id} className="op-row">
+                          <span className={`dot ${cls}`} />
+                          <span className="op-item-name">{o.name}</span>
+                          <span className="op-item-cycle">{o.cycle}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {(() => {
+                const n = p.considerations.filter((c) => c.status !== '해결').length
+                return n > 0 ? (
+                  <div className="card-footer">
+                    <span className="stat"><span className="dot dot-red" /> 미해결 고려사항 {n}건</span>
+                  </div>
+                ) : null
+              })()}
             </button>
           )
         })}
