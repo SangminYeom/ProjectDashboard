@@ -33,6 +33,7 @@ describe('writeStore', () => {
     const sqlFn = vi.fn().mockResolvedValue([])
     neon.mockReturnValue(sqlFn)
     await writeStore({ projects: [{ id: 'p1' }] })
+    expect(neon).toHaveBeenCalledWith(process.env.DATABASE_URL)
     expect(sqlFn).toHaveBeenCalledTimes(1)
   })
 })
