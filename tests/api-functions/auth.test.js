@@ -69,5 +69,14 @@ describe('requireAuth', () => {
     const res = { status: vi.fn().mockReturnThis(), json: vi.fn() }
     expect(requireAuth(req, res)).toBe(false)
     expect(res.status).toHaveBeenCalledWith(401)
+    expect(res.json).toHaveBeenCalledWith({ error: 'unauthorized' })
+  })
+
+  it('SESSION_SECRET이 없으면 false를 반환하고 401을 응답한다', () => {
+    vi.unstubAllEnvs()  // remove SESSION_SECRET set in beforeEach
+    const req = { headers: { cookie: 'auth_token=some-token' } }
+    const res = { status: vi.fn().mockReturnThis(), json: vi.fn() }
+    expect(requireAuth(req, res)).toBe(false)
+    expect(res.status).toHaveBeenCalledWith(401)
   })
 })
