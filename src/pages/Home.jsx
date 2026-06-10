@@ -63,7 +63,7 @@ export default function Home({ projects, onOpen, onChange }) {
                         <span className="kpi-name">{k.name}</span>
                         {k.type === 'numeric' ? (
                           <div className="kpi-right">
-                            <span className="kpi-nums">{k.current} / {k.target}{k.unit}</span>
+                            <span className="kpi-nums">{k.current}{k.unit} / {k.target}{k.unit}</span>
                             <span className="kpi-prog">진척 {kpiRate(k) ?? 0}%</span>
                           </div>
                         ) : (

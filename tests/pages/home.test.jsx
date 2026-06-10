@@ -34,7 +34,7 @@ it('카드에 이름·과제명·KPI 수치 포맷을 표시한다', () => {
   expect(screen.getByText('차세대 시스템')).toBeInTheDocument()
   expect(screen.getByText('인프라 전환')).toBeInTheDocument()
   expect(screen.getByText('매출')).toBeInTheDocument()
-  expect(screen.getByText(/7 \/ 10억/)).toBeInTheDocument()
+  expect(screen.getByText(/7억 \/ 10억/)).toBeInTheDocument()
 })
 
 it('카드 클릭 시 onOpen을 호출한다', () => {
