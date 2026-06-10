@@ -17,16 +17,24 @@ function buildTicks(minMs, maxMs) {
 
 const hasDate = (t) => t.startDate && t.endDate
 
-export default function Gantt({ tasks, onUpdate, onRemove, onReorder, today = todayStr() }) {
+export default function Gantt({ tasks, onUpdate, onRemove, onReorder, milestones = [], onMilestoneUpdate, onMilestoneRemove, onMilestoneReorder, today = todayStr() }) {
   const [editingTask, setEditingTask] = useState(null)
+  const [editingMilestone, setEditingMilestone] = useState(null)
   const [dragOver, setDragOver] = useState(null)
+  const [dragOverMs, setDragOverMs] = useState(null)
   const dragIdx = useRef(null)
+  const dragMsIdx = useRef(null)
 
-  if (tasks.length === 0) return <p className="empty">태스크가 없습니다.</p>
+  if (tasks.length === 0 && milestones.length === 0) return <p className="empty">태스크가 없습니다.</p>
 
   const dated = tasks.filter(hasDate)
-  const minMs = dated.length ? Math.min(...dated.map((t) => toMs(t.startDate)), toMs(today)) : toMs(today)
-  const maxMs = dated.length ? Math.max(...dated.map((t) => toMs(t.endDate)), toMs(today)) : toMs(today) + 86400000 * 30
+  const msDates = milestones.filter((m) => m.date).map((m) => toMs(m.date))
+  const minMs = (dated.length || msDates.length)
+    ? Math.min(...dated.map((t) => toMs(t.startDate)), ...msDates, toMs(today))
+    : toMs(today)
+  const maxMs = (dated.length || msDates.length)
+    ? Math.max(...dated.map((t) => toMs(t.endDate)), ...msDates, toMs(today))
+    : toMs(today) + 86400000 * 30
   const span = Math.max(maxMs - minMs, 1)
   const leftPct = (d) => ((toMs(d) - minMs) / span) * 100
   const widthPct = (t) => Math.max(((toMs(t.endDate) - toMs(t.startDate)) / span) * 100, 1)
@@ -98,6 +106,44 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, today = to
             </div>
           )
         })}
+
+        {milestones.map((m, idx) => (
+          <div key={m.id}
+            className={`gantt-row milestone-row${dragOverMs === idx ? ' drag-over' : ''}`}
+            draggable
+            onDragStart={(e) => { dragMsIdx.current = idx; e.dataTransfer.effectAllowed = 'move' }}
+            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOverMs(idx) }}
+            onDragLeave={() => setDragOverMs(null)}
+            onDrop={() => {
+              if (dragMsIdx.current !== null && dragMsIdx.current !== idx) onMilestoneReorder(dragMsIdx.current, idx)
+              setDragOverMs(null)
+              dragMsIdx.current = null
+            }}
+            onDragEnd={() => { setDragOverMs(null); dragMsIdx.current = null }}
+          >
+            <span className="drag-handle" aria-hidden="true">⠿</span>
+            <span className="task-name">
+              <span className="milestone-icon" aria-hidden="true">◆</span>
+              <span className="task-name-text milestone-name">{m.name}</span>
+            </span>
+            <span className="task-progress">—</span>
+            <span className="gantt-track gantt-track--milestone">
+              {m.date && (
+                <span
+                  className="milestone-diamond"
+                  style={{ left: `${leftPct(m.date)}%` }}
+                  title={m.date}
+                />
+              )}
+              <span className="today-line" style={{ left: `${leftPct(today)}%` }} />
+            </span>
+            <span className="milestone-badge">◆ 마일스톤</span>
+            <button className="icon-btn" aria-label={`${m.name} 수정`}
+              onClick={() => setEditingMilestone(m)}>✏</button>
+            <button className="icon-btn" aria-label={`${m.name} 삭제`}
+              onClick={() => confirm(`마일스톤 '${m.name}'을(를) 삭제할까요?`) && onMilestoneRemove(m.id)}>✕</button>
+          </div>
+        ))}
       </div>
 
       {editingTask && (
@@ -105,6 +151,13 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, today = to
           task={editingTask}
           onSubmit={(patch) => { onUpdate(editingTask.id, patch); setEditingTask(null) }}
           onClose={() => setEditingTask(null)}
+        />
+      )}
+      {editingMilestone && (
+        <MilestoneEditForm
+          milestone={editingMilestone}
+          onSubmit={(patch) => { onMilestoneUpdate(editingMilestone.id, patch); setEditingMilestone(null) }}
+          onClose={() => setEditingMilestone(null)}
         />
       )}
     </>
@@ -135,6 +188,23 @@ function TaskEditForm({ task, onSubmit, onClose }) {
           </select>
         </label>
         <label>진척률 <input name="progress" type="number" min="0" max="100" defaultValue={task.progress} /></label>
+        <button type="submit" className="btn-primary">저장</button>
+      </form>
+    </Modal>
+  )
+}
+
+function MilestoneEditForm({ milestone, onSubmit, onClose }) {
+  function handleSubmit(e) {
+    e.preventDefault()
+    const f = new FormData(e.target)
+    onSubmit({ name: f.get('name'), date: f.get('date') })
+  }
+  return (
+    <Modal title="마일스톤 수정" onClose={onClose}>
+      <form onSubmit={handleSubmit} className="form">
+        <label>마일스톤명 <input name="name" defaultValue={milestone.name} required /></label>
+        <label>날짜 <input name="date" type="date" defaultValue={milestone.date} required /></label>
         <button type="submit" className="btn-primary">저장</button>
       </form>
     </Modal>

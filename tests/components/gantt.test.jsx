@@ -42,3 +42,50 @@ it('모든 태스크가 미래여도 오늘선이 0% 이상에 위치한다', ()
   const todayLine = container.querySelector('.today-line')
   expect(parseFloat(todayLine.style.left)).toBeGreaterThanOrEqual(0)
 })
+
+const milestones = [
+  { id: 'm1', name: '서비스 배포일', date: '2026-06-15' },
+]
+
+it('마일스톤 행이 렌더링된다', () => {
+  render(
+    <Gantt
+      tasks={tasks}
+      onUpdate={() => {}} onRemove={() => {}} onReorder={() => {}}
+      milestones={milestones}
+      onMilestoneUpdate={() => {}} onMilestoneRemove={() => {}} onMilestoneReorder={() => {}}
+      today="2026-06-07"
+    />
+  )
+  expect(screen.getByText('서비스 배포일')).toBeInTheDocument()
+  expect(screen.getByText('◆ 마일스톤')).toBeInTheDocument()
+})
+
+it('마일스톤만 있고 tasks가 없어도 렌더링된다', () => {
+  render(
+    <Gantt
+      tasks={[]}
+      onUpdate={() => {}} onRemove={() => {}} onReorder={() => {}}
+      milestones={milestones}
+      onMilestoneUpdate={() => {}} onMilestoneRemove={() => {}} onMilestoneReorder={() => {}}
+      today="2026-06-07"
+    />
+  )
+  expect(screen.getByText('서비스 배포일')).toBeInTheDocument()
+})
+
+it('마일스톤 date가 Gantt min/max 범위에 포함된다', () => {
+  const futureMilestone = [{ id: 'm2', name: '최종완료', date: '2027-01-01' }]
+  const { container } = render(
+    <Gantt
+      tasks={tasks}
+      onUpdate={() => {}} onRemove={() => {}} onReorder={() => {}}
+      milestones={futureMilestone}
+      onMilestoneUpdate={() => {}} onMilestoneRemove={() => {}} onMilestoneReorder={() => {}}
+      today="2026-06-07"
+    />
+  )
+  const bars = container.querySelectorAll('.gantt-bar')
+  expect(parseFloat(bars[0].style.left)).toBeGreaterThanOrEqual(0)
+  expect(container.querySelector('.milestone-diamond')).toBeInTheDocument()
+})
