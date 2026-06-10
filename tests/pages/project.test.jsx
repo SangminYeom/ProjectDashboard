@@ -1,5 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { vi } from 'vitest'
+
+vi.mock('html-to-image', () => ({
+  toPng: vi.fn().mockResolvedValue('data:image/png;base64,test'),
+}))
+
 import Project from '../../src/pages/Project.jsx'
 
 const project = {
@@ -19,10 +24,10 @@ function setup() {
 
 it('프로젝트명·기간·KPI 바를 표시하고 기본 탭은 중점수행과제', () => {
   setup()
-  expect(screen.getByText('차세대 시스템')).toBeInTheDocument()
-  expect(screen.getByText(/2026-01-01\s*–\s*2026-12-31/)).toBeInTheDocument()
-  expect(screen.getByText('70%')).toBeInTheDocument()      // KPI 바
-  expect(screen.getByText('인프라 전환')).toBeInTheDocument() // 기본 탭 내용
+  expect(screen.getAllByText('차세대 시스템')[0]).toBeInTheDocument()
+  expect(screen.getAllByText(/2026-01-01\s*–\s*2026-12-31/)[0]).toBeInTheDocument()
+  expect(screen.getByText('70%')).toBeInTheDocument()              // KPI 바 (snapshot은 '진척 70%'로 다름)
+  expect(screen.getAllByText('인프라 전환')[0]).toBeInTheDocument()  // 기본 탭 내용
 })
 
 it('탭 전환이 동작한다', () => {
@@ -30,7 +35,7 @@ it('탭 전환이 동작한다', () => {
   fireEvent.click(screen.getByRole('button', { name: /운영업무/ }))
   expect(screen.getByDisplayValue('주간 보고')).toBeInTheDocument()
   fireEvent.click(screen.getByRole('button', { name: /고려사항/ }))
-  expect(screen.getByText('계약 지연')).toBeInTheDocument()
+  expect(screen.getAllByText('계약 지연')[0]).toBeInTheDocument()
 })
 
 it('뒤로 가기 버튼이 onBack을 호출한다', () => {
@@ -45,4 +50,9 @@ it('하위 컴포넌트 변경이 onChange(updater)로 전파된다', () => {
   expect(onChange).toHaveBeenCalledTimes(1)
   const updater = onChange.mock.calls[0][0]
   expect(updater(project).kpis[0].current).toBe(8)
+})
+
+it('PNG 내보내기 버튼이 존재한다', () => {
+  setup()
+  expect(screen.getByRole('button', { name: 'PNG 내보내기' })).toBeInTheDocument()
 })
