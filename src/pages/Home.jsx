@@ -13,7 +13,7 @@ export default function Home({ projects, onOpen, onChange }) {
   return (
     <div className="home">
       <header className="home-header">
-        <h1 className="home-title">프로젝트 대시보드</h1>
+        <h1 className="home-title">고객가치혁신유닛 Project Dashboard</h1>
         <div className="home-stats">
           <span className="home-stat">{projects.length}개</span>
           {delayed > 0 && (

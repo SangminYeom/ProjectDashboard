@@ -25,7 +25,7 @@ function setup() {
 
 it('페이지 제목과 요약 통계를 표시한다', () => {
   setup()
-  expect(screen.getByText('프로젝트 대시보드')).toBeInTheDocument()
+  expect(screen.getByText('고객가치혁신유닛 Project Dashboard')).toBeInTheDocument()
   expect(screen.getByText('1개')).toBeInTheDocument()
 })
 
