@@ -4,8 +4,6 @@ import {
   kpiRate, initiativeProgress, countDelayedTasks, countOpenConsiderations, todayStr,
 } from '../lib/calc.js'
 
-const SEV_ORDER = { 높음: 0, 중간: 1, 낮음: 2 }
-
 export default function Home({ projects, onOpen, onChange }) {
   const [adding, setAdding] = useState(false)
   const today = todayStr()
