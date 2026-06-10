@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Modal from './Modal.jsx'
 import Gantt from './Gantt.jsx'
 import { initiativeProgress } from '../lib/calc.js'
@@ -7,24 +7,49 @@ const TASK_STATUS = ['예정', '진행중', '완료', '보류']
 
 export default function Initiatives({ initiatives, onChange }) {
   const [addingInit, setAddingInit] = useState(false)
-  const [taskFormFor, setTaskFormFor] = useState(null) // 과제 id
+  const [editingInit, setEditingInit] = useState(null)
+  const [taskFormFor, setTaskFormFor] = useState(null)
   const [collapsed, setCollapsed] = useState({})
+  const [dragOver, setDragOver] = useState(null)
+  const dragIdx = useRef(null)
 
   function updateInit(id, updater) {
     onChange(initiatives.map((i) => (i.id === id ? updater(i) : i)))
   }
 
+  function reorderInit(fromIdx, toIdx) {
+    const next = [...initiatives]
+    const [item] = next.splice(fromIdx, 1)
+    next.splice(toIdx, 0, item)
+    onChange(next)
+  }
+
   return (
     <section>
-      {initiatives.map((init) => (
-        <div key={init.id} className="initiative-card">
+      {initiatives.map((init, idx) => (
+        <div key={init.id}
+          className={`initiative-card${dragOver === idx ? ' drag-over' : ''}`}
+          draggable
+          onDragStart={(e) => { dragIdx.current = idx; e.dataTransfer.effectAllowed = 'move' }}
+          onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOver(idx) }}
+          onDragLeave={() => setDragOver(null)}
+          onDrop={() => {
+            if (dragIdx.current !== null && dragIdx.current !== idx) reorderInit(dragIdx.current, idx)
+            setDragOver(null)
+            dragIdx.current = null
+          }}
+          onDragEnd={() => { setDragOver(null); dragIdx.current = null }}
+        >
           <div className="initiative-head"
             onClick={() => setCollapsed({ ...collapsed, [init.id]: !collapsed[init.id] })}>
+            <span className="drag-handle" aria-hidden="true">⠿</span>
             <strong>{init.name}</strong>
             <span className="meta">
               진척 {initiativeProgress(init)}% · 태스크 {init.tasks.length}건
               {init.owner ? ` · 담당 ${init.owner}` : ''}
             </span>
+            <button className="icon-btn" aria-label={`${init.name} 수정`}
+              onClick={(e) => { e.stopPropagation(); setEditingInit(init) }}>✏</button>
             <button className="icon-btn" aria-label={`${init.name} 삭제`}
               onClick={(e) => {
                 e.stopPropagation()
@@ -39,6 +64,12 @@ export default function Initiatives({ initiatives, onChange }) {
                   (i) => ({ ...i, tasks: i.tasks.map((t) => (t.id === taskId ? { ...t, ...patch } : t)) }))}
                 onRemove={(taskId) => updateInit(init.id,
                   (i) => ({ ...i, tasks: i.tasks.filter((t) => t.id !== taskId) }))}
+                onReorder={(fromIdx, toIdx) => updateInit(init.id, (i) => {
+                  const tasks = [...i.tasks]
+                  const [item] = tasks.splice(fromIdx, 1)
+                  tasks.splice(toIdx, 0, item)
+                  return { ...i, tasks }
+                })}
               />
               <button className="link-btn" onClick={() => setTaskFormFor(init.id)}>+ 태스크 추가</button>
             </div>
@@ -56,6 +87,16 @@ export default function Initiatives({ initiatives, onChange }) {
           onClose={() => setAddingInit(false)}
         />
       )}
+      {editingInit && (
+        <InitiativeForm
+          initial={editingInit}
+          onSubmit={(form) => {
+            updateInit(editingInit.id, (i) => ({ ...i, ...form }))
+            setEditingInit(null)
+          }}
+          onClose={() => setEditingInit(null)}
+        />
+      )}
       {taskFormFor && (
         <TaskForm
           onSubmit={(task) => {
@@ -69,19 +110,19 @@ export default function Initiatives({ initiatives, onChange }) {
   )
 }
 
-function InitiativeForm({ onSubmit, onClose }) {
+function InitiativeForm({ initial, onSubmit, onClose }) {
   function handleSubmit(e) {
     e.preventDefault()
     const f = new FormData(e.target)
     onSubmit({ name: f.get('name'), description: f.get('description'), owner: f.get('owner') })
   }
   return (
-    <Modal title="과제 추가" onClose={onClose}>
+    <Modal title={initial ? '과제 수정' : '과제 추가'} onClose={onClose}>
       <form onSubmit={handleSubmit} className="form">
-        <label>과제명 <input name="name" required /></label>
-        <label>설명 <textarea name="description" /></label>
-        <label>담당 <input name="owner" /></label>
-        <button type="submit" className="btn-primary">추가</button>
+        <label>과제명 <input name="name" defaultValue={initial?.name} required /></label>
+        <label>설명 <textarea name="description" defaultValue={initial?.description} /></label>
+        <label>담당 <input name="owner" defaultValue={initial?.owner} /></label>
+        <button type="submit" className="btn-primary">{initial ? '저장' : '추가'}</button>
       </form>
     </Modal>
   )
@@ -103,8 +144,8 @@ function TaskForm({ onSubmit, onClose }) {
     <Modal title="태스크 추가" onClose={onClose}>
       <form onSubmit={handleSubmit} className="form">
         <label>태스크명 <input name="name" required /></label>
-        <label>시작일 <input name="startDate" type="date" required /></label>
-        <label>종료일 <input name="endDate" type="date" required /></label>
+        <label>시작일 <input name="startDate" type="date" /></label>
+        <label>종료일 <input name="endDate" type="date" /></label>
         <label>상태
           <select name="status" defaultValue="예정">
             {TASK_STATUS.map((s) => <option key={s}>{s}</option>)}

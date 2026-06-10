@@ -15,6 +15,8 @@ function buildTicks(minMs, maxMs) {
   })
 }
 
+const hasDate = (t) => t.startDate && t.endDate
+
 export default function Gantt({ tasks, onUpdate, onRemove, onReorder, today = todayStr() }) {
   const [editingTask, setEditingTask] = useState(null)
   const [dragOver, setDragOver] = useState(null)
@@ -22,8 +24,9 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, today = to
 
   if (tasks.length === 0) return <p className="empty">태스크가 없습니다.</p>
 
-  const minMs = Math.min(...tasks.map((t) => toMs(t.startDate)), toMs(today))
-  const maxMs = Math.max(...tasks.map((t) => toMs(t.endDate)), toMs(today))
+  const dated = tasks.filter(hasDate)
+  const minMs = dated.length ? Math.min(...dated.map((t) => toMs(t.startDate)), toMs(today)) : toMs(today)
+  const maxMs = dated.length ? Math.max(...dated.map((t) => toMs(t.endDate)), toMs(today)) : toMs(today) + 86400000 * 30
   const span = Math.max(maxMs - minMs, 1)
   const leftPct = (d) => ((toMs(d) - minMs) / span) * 100
   const widthPct = (t) => Math.max(((toMs(t.endDate) - toMs(t.startDate)) / span) * 100, 1)
@@ -52,7 +55,7 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, today = to
         </div>
 
         {tasks.map((t, idx) => {
-          const delayed = isTaskDelayed(t, today)
+          const delayed = hasDate(t) && isTaskDelayed(t, today)
           return (
             <div key={t.id}
               className={`gantt-row${dragOver === idx ? ' drag-over' : ''}`}
@@ -76,14 +79,18 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, today = to
                   onChange={(e) => onUpdate(t.id, { progress: Math.max(0, Math.min(100, Number(e.target.value) || 0)) })} />%
               </span>
               <span className="gantt-track">
-                <span
-                  className={`gantt-bar ${t.progress === 100 ? 'done' : delayed ? 'delayed' : t.progress > 0 ? 'active' : 'scheduled'}`}
-                  style={{ left: `${leftPct(t.startDate)}%`, width: `${widthPct(t)}%` }}
-                  title={`${t.startDate} ~ ${t.endDate}`}
-                />
+                {hasDate(t) ? (
+                  <span
+                    className={`gantt-bar ${t.progress === 100 ? 'done' : delayed ? 'delayed' : t.progress > 0 ? 'active' : 'scheduled'}`}
+                    style={{ left: `${leftPct(t.startDate)}%`, width: `${widthPct(t)}%` }}
+                    title={`${t.startDate} ~ ${t.endDate}`}
+                  />
+                ) : (
+                  <span className="gantt-bar unscheduled" title="일정미정" />
+                )}
                 <span className="today-line" style={{ left: `${leftPct(today)}%` }} title={`오늘 ${today}`} />
               </span>
-              <span className={`task-status ${delayed ? 'delayed' : ''}`}>{delayed ? '⚠ 지연' : t.status}</span>
+              <span className={`task-status ${delayed ? 'delayed' : ''}`}>{delayed ? '⚠ 지연' : hasDate(t) ? t.status : '일정미정'}</span>
               <button className="icon-btn" aria-label={`${t.name} 수정`}
                 onClick={() => setEditingTask(t)}>✏</button>
               <button className="icon-btn" aria-label={`${t.name} 삭제`}
@@ -120,8 +127,8 @@ function TaskEditForm({ task, onSubmit, onClose }) {
     <Modal title="태스크 수정" onClose={onClose}>
       <form onSubmit={handleSubmit} className="form">
         <label>태스크명 <input name="name" defaultValue={task.name} required /></label>
-        <label>시작일 <input name="startDate" type="date" defaultValue={task.startDate} required /></label>
-        <label>종료일 <input name="endDate" type="date" defaultValue={task.endDate} required /></label>
+        <label>시작일 <input name="startDate" type="date" defaultValue={task.startDate} /></label>
+        <label>종료일 <input name="endDate" type="date" defaultValue={task.endDate} /></label>
         <label>상태
           <select name="status" defaultValue={task.status}>
             {TASK_STATUS.map((s) => <option key={s}>{s}</option>)}

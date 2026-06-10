@@ -207,10 +207,14 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .task-progress input { width: 52px; padding: 2px 4px; font-size: 12px; }
 .gantt-track { position: relative; flex: 1; height: 4px; background: #e8e8ed; border-radius: 2px; overflow: hidden; }
 .gantt-bar { position: absolute; top: 0; height: 4px; border-radius: 2px; }
-.gantt-bar.done      { background: #30d158; }
-.gantt-bar.active    { background: #0071e3; }
-.gantt-bar.scheduled { background: #c7c7cc; }
-.gantt-bar.delayed   { background: #ff3b30; }
+.gantt-bar.done        { background: #30d158; }
+.gantt-bar.active      { background: #0071e3; }
+.gantt-bar.scheduled   { background: #c7c7cc; }
+.gantt-bar.delayed     { background: #ff3b30; }
+.gantt-bar.unscheduled {
+  left: 0; width: 100%;
+  background: repeating-linear-gradient(90deg, #c7c7cc 0, #c7c7cc 3px, transparent 3px, transparent 8px);
+}
 .today-line { position: absolute; top: -6px; width: 1.5px; height: 16px; background: #0071e3; opacity: .7; }
 .task-status { width: 56px; flex-shrink: 0; font-size: 12px; color: #86868b; }
 .task-status.delayed { color: #ff3b30; font-weight: 600; }
