@@ -8,6 +8,7 @@ const initiatives = [{
     { id: 't1', name: '서버 이전', startDate: '2026-01-01', endDate: '2026-03-31', progress: 100, status: '완료' },
     { id: 't2', name: 'DB 이전', startDate: '2026-03-01', endDate: '2026-08-31', progress: 60, status: '진행중' },
   ],
+  milestones: [{ id: 'm1', name: '시스템 오픈', date: '2026-09-01' }],
 }]
 
 it('과제명·자동 계산 진척률·담당자를 표시한다', () => {
@@ -45,4 +46,30 @@ it('과제 헤더 클릭으로 접고 펼친다', () => {
   expect(screen.getByText('서버 이전')).toBeInTheDocument()
   fireEvent.click(screen.getByText('인프라 전환'))
   expect(screen.queryByText('서버 이전')).not.toBeInTheDocument()
+})
+
+it('마일스톤 추가 폼으로 마일스톤을 추가한다', () => {
+  const onChange = vi.fn()
+  render(<Initiatives initiatives={initiatives} onChange={onChange} />)
+  fireEvent.click(screen.getByText('+ 마일스톤 추가'))
+  fireEvent.change(screen.getByLabelText(/마일스톤명/), { target: { value: '서비스 배포일' } })
+  fireEvent.change(screen.getByLabelText(/날짜/), { target: { value: '2026-10-01' } })
+  fireEvent.click(screen.getByRole('button', { name: '추가' }))
+  const updated = onChange.mock.calls[0][0][0]
+  expect(updated.milestones).toHaveLength(2)
+  expect(updated.milestones[1]).toMatchObject({ name: '서비스 배포일', date: '2026-10-01' })
+})
+
+it('마일스톤이 있으면 헤더에 마일스톤 N건 표시', () => {
+  render(<Initiatives initiatives={initiatives} onChange={() => {}} />)
+  expect(screen.getByText(/마일스톤 1건/)).toBeInTheDocument()
+})
+
+it('과제 추가 시 milestones 빈 배열 포함', () => {
+  const onChange = vi.fn()
+  render(<Initiatives initiatives={[]} onChange={onChange} />)
+  fireEvent.click(screen.getByText('+ 과제 추가'))
+  fireEvent.change(screen.getByLabelText(/과제명/), { target: { value: '신규과제' } })
+  fireEvent.click(screen.getByRole('button', { name: '추가' }))
+  expect(onChange.mock.calls[0][0][0]).toMatchObject({ name: '신규과제', tasks: [], milestones: [] })
 })
