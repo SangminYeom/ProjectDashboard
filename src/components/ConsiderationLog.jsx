@@ -72,11 +72,11 @@ function ConsiderationCard({ c, onStatus, onEdit, onRemove }) {
         <select value={c.status} aria-label={`${c.title} 상태`} onChange={(e) => onStatus(c, e.target.value)}>
           {STATUSES.map((s) => <option key={s}>{s}</option>)}
         </select>
-        <button className="icon-btn" onClick={onEdit} aria-label={`${c.title} 편집`}>✏️</button>
+        <button className="icon-btn" onClick={onEdit} aria-label={`${c.title} 편집`}>✏</button>
         <button className="icon-btn" onClick={onRemove} aria-label={`${c.title} 삭제`}>✕</button>
       </div>
       {c.content && <p>{c.content}</p>}
-      {c.response && <p className="response">💡 대응안: {c.response}</p>}
+      {c.response && <p className="response">대응안: {c.response}</p>}
       <p className="meta">등록 {c.createdDate}{c.resolvedDate ? ` · 해결 ${c.resolvedDate}` : ''}</p>
     </div>
   )

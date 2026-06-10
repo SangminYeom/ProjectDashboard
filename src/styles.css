@@ -240,19 +240,26 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .op-status-cell select { width: auto; }
 
 /* ===== 고려사항 ===== */
-.consideration { background: #fff; border: 1px solid #e5e7eb; border-left-width: 4px; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; }
-.consideration.sev-high { border-left-color: #ef4444; }
-.consideration.sev-mid { border-left-color: #f59e0b; }
-.consideration.sev-low { border-left-color: #9ca3af; }
-.consideration-head { display: flex; align-items: center; gap: 10px; }
-.consideration-head h4 { margin: 0; flex: 1; font-size: 15px; }
-.consideration p { margin: 8px 0 0; font-size: 14px; }
-.consideration .response { color: #1e40af; }
-.consideration .meta { color: #9ca3af; font-size: 12px; }
-.badge.sev-high { background: #fee2e2; color: #991b1b; }
-.badge.sev-mid { background: #fef3c7; color: #92400e; }
-.badge.sev-low { background: #f3f4f6; color: #4b5563; }
-.resolved-section { margin-top: 16px; opacity: .75; }
+.consideration {
+  background: #fff; border-left: 4px solid #d2d2d7;
+  border-radius: 0 12px 12px 0; padding: 14px 18px; margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04), 0 0 1px rgba(0,0,0,.06);
+}
+.consideration.sev-high { border-left-color: #ff3b30; }
+.consideration.sev-mid  { border-left-color: #ff9f0a; }
+.consideration.sev-low  { border-left-color: #d2d2d7; }
+.consideration-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.consideration-head h4 { margin: 0; flex: 1; font-size: 14px; font-weight: 600; color: #1d1d1f; }
+.consideration p { margin: 8px 0 0; font-size: 13px; color: #6e6e73; line-height: 1.6; }
+.consideration .response { color: #1d4ed8; }
+.consideration .meta { color: #86868b; font-size: 11px; }
+.resolved-section { margin-top: 20px; opacity: .7; }
+
+/* 심각도 badge */
+.badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; border: 1px solid; flex-shrink: 0; }
+.badge.sev-high { background: #fff1f0; color: #cf1124; border-color: #ffc9c9; }
+.badge.sev-mid  { background: #fff8f0; color: #c05621; border-color: #ffd8a8; }
+.badge.sev-low  { background: #f8f9fa; color: #495057; border-color: #dee2e6; }
 
 /* ===== 모달 / 폼 ===== */
 .modal-backdrop {
