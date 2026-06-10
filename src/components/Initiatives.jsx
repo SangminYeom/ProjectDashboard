@@ -86,7 +86,7 @@ export default function Initiatives({ initiatives, onChange }) {
                     return { ...i, milestones }
                   })}
                 />
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="initiative-add-btns">
                   <button className="link-btn" onClick={() => setTaskFormFor(init.id)}>+ 태스크 추가</button>
                   <button className="link-btn" onClick={() => setMilestoneFormFor(init.id)}>+ 마일스톤 추가</button>
                 </div>

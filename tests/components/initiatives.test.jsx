@@ -25,7 +25,7 @@ it('과제 추가 폼으로 새 과제를 추가한다', () => {
   fireEvent.change(screen.getByLabelText(/과제명/), { target: { value: '데이터 표준화' } })
   fireEvent.click(screen.getByRole('button', { name: '추가' }))
   const added = onChange.mock.calls[0][0][0]
-  expect(added).toMatchObject({ name: '데이터 표준화', tasks: [] })
+  expect(added).toMatchObject({ name: '데이터 표준화', tasks: [], milestones: [] })
 })
 
 it('태스크 추가 폼으로 과제에 태스크를 추가한다', () => {
