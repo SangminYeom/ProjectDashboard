@@ -101,7 +101,7 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, milestones
               </span>
               <span className={`task-status ${delayed ? 'delayed' : ''}`}>{delayed ? '⚠ 지연' : hasDate(t) ? t.status : '일정미정'}</span>
               <button className="icon-btn" aria-label={`${t.name} 수정`}
-                onClick={() => setEditingTask(t)}>✏️</button>
+                onClick={() => setEditingTask(t)}>✏</button>
               <button className="icon-btn" aria-label={`${t.name} 삭제`}
                 onClick={() => confirm(`태스크 '${t.name}'을(를) 삭제할까요?`) && onRemove(t.id)}>🗑️</button>
             </div>
@@ -139,7 +139,7 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, milestones
             </span>
             <span className="milestone-badge">◆ 마일스톤</span>
             <button className="icon-btn" aria-label={`${m.name} 수정`}
-              onClick={() => setEditingMilestone(m)}>✏️</button>
+              onClick={() => setEditingMilestone(m)}>✏</button>
             <button className="icon-btn" aria-label={`${m.name} 삭제`}
               onClick={() => confirm(`마일스톤 '${m.name}'을(를) 삭제할까요?`) && onMilestoneRemove(m.id)}>🗑️</button>
           </div>

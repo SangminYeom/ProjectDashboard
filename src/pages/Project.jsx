@@ -41,7 +41,7 @@ export default function Project({ project, onChange, onDelete, onBack }) {
           </div>
           <div className="page-head-actions">
             <button className="btn-export" onClick={handleExport} aria-label="PNG 내보내기">↓ PNG</button>
-            <button className="icon-btn" onClick={() => setEditing(true)}>✏️</button>
+            <button className="icon-btn" onClick={() => setEditing(true)}>✏</button>
             <button className="icon-btn danger"
               onClick={() => confirm(`'${project.name}' 프로젝트를 삭제할까요?`) && onDelete()}>삭제</button>
           </div>

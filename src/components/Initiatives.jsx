@@ -53,7 +53,7 @@ export default function Initiatives({ initiatives, onChange }) {
                 {init.owner ? ` · 담당 ${init.owner}` : ''}
               </span>
               <button className="icon-btn" aria-label={`${init.name} 수정`}
-                onClick={(e) => { e.stopPropagation(); setEditingInit(init) }}>✏️</button>
+                onClick={(e) => { e.stopPropagation(); setEditingInit(init) }}>✏</button>
               <button className="icon-btn" aria-label={`${init.name} 삭제`}
                 onClick={(e) => {
                   e.stopPropagation()

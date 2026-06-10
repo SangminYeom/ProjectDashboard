@@ -40,7 +40,7 @@ export default function KpiBar({ kpis, onChange }) {
               <div className="kpi-actions">
                 <span className="drag-handle" aria-hidden="true">⠿</span>
                 <button className="icon-btn" aria-label={`${k.name} 수정`}
-                  onClick={() => setEditingKpi(k)}>✏️</button>
+                  onClick={() => setEditingKpi(k)}>✏</button>
                 <button className="icon-btn" aria-label={`${k.name} 삭제`}
                   onClick={() => confirm(`KPI '${k.name}'을(를) 삭제할까요?`) && onChange(kpis.filter((x) => x.id !== k.id))}>🗑️</button>
               </div>
