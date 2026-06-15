@@ -129,7 +129,7 @@ const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
                     <div className="ini-track"><div className="ini-fill" style={{ width: `${prog}%` }} /></div>
                     <span className="ini-pct">{prog}%</span>
                   </div>
-                  {(i.milestones ?? []).map((m) => (
+                  {(i.items ?? i.milestones ?? []).filter(x => x.type === 'milestone' || (!x.type && x.date && !x.startDate)).map((m) => (
                     <div key={m.id} className="ini-row">
                       <span className="ini-name">
                         <span className="milestone-icon">◆</span>{m.name}

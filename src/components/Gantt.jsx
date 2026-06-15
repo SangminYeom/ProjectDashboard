@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import Modal from './Modal.jsx'
 import { isTaskDelayed, todayStr } from '../lib/calc.js'
 
@@ -17,28 +17,43 @@ function buildTicks(minMs, maxMs) {
 
 const hasDate = (t) => t.startDate && t.endDate
 
-export default function Gantt({ tasks, onUpdate, onRemove, onReorder, milestones = [], onMilestoneUpdate, onMilestoneRemove, onMilestoneReorder, today = todayStr() }) {
-  const [editingTask, setEditingTask] = useState(null)
-  const [editingMilestone, setEditingMilestone] = useState(null)
+export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today = todayStr() }) {
+  const [editingItem, setEditingItem] = useState(null)
   const [dragOver, setDragOver] = useState(null)
-  const [dragOverMs, setDragOverMs] = useState(null)
-  const dragIdx = useRef(null)
-  const dragMsIdx = useRef(null)
 
-  if (tasks.length === 0 && milestones.length === 0) return <p className="empty">태스크가 없습니다.</p>
+  if (items.length === 0) return <p className="empty">태스크가 없습니다.</p>
 
+  const tasks = items.filter(i => i.type === 'task')
+  const milestones = items.filter(i => i.type === 'milestone')
   const dated = tasks.filter(hasDate)
-  const msDates = milestones.filter((m) => m.date).map((m) => toMs(m.date))
+  const msDates = milestones.filter(m => m.date).map(m => toMs(m.date))
   const minMs = (dated.length || msDates.length)
-    ? Math.min(...dated.map((t) => toMs(t.startDate)), ...msDates, toMs(today))
+    ? Math.min(...dated.map(t => toMs(t.startDate)), ...msDates, toMs(today))
     : toMs(today)
   const maxMs = (dated.length || msDates.length)
-    ? Math.max(...dated.map((t) => toMs(t.endDate)), ...msDates, toMs(today))
+    ? Math.max(...dated.map(t => toMs(t.endDate)), ...msDates, toMs(today))
     : toMs(today) + 86400000 * 30
   const span = Math.max(maxMs - minMs, 1)
   const leftPct = (d) => ((toMs(d) - minMs) / span) * 100
   const widthPct = (t) => Math.max(((toMs(t.endDate) - toMs(t.startDate)) / span) * 100, 1)
   const ticks = buildTicks(minMs, maxMs)
+
+  function makeRowHandlers(idx) {
+    return {
+      draggable: true,
+      onDragStart: (e) => { e.stopPropagation(); e.dataTransfer.setData('application/item-idx', String(idx)); e.dataTransfer.effectAllowed = 'move' },
+      onDragOver: (e) => { if (!e.dataTransfer.types.includes('application/item-idx')) return; e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOver(idx) },
+      onDragLeave: () => setDragOver(null),
+      onDrop: (e) => {
+        if (!e.dataTransfer.types.includes('application/item-idx')) return
+        e.stopPropagation()
+        const from = parseInt(e.dataTransfer.getData('application/item-idx'), 10)
+        if (!isNaN(from) && from !== idx) onReorder(from, idx)
+        setDragOver(null)
+      },
+      onDragEnd: () => setDragOver(null),
+    }
+  }
 
   return (
     <>
@@ -64,100 +79,85 @@ export default function Gantt({ tasks, onUpdate, onRemove, onReorder, milestones
           <span className="gantt-btn-spacer" />
         </div>
 
-        {tasks.map((t, idx) => {
-          const delayed = hasDate(t) && isTaskDelayed(t, today)
+        {items.map((item, idx) => {
+          if (item.type === 'milestone') {
+            return (
+              <div key={item.id}
+                className={`gantt-row milestone-row${dragOver === idx ? ' drag-over' : ''}`}
+                {...makeRowHandlers(idx)}
+              >
+                <span className="drag-handle" aria-hidden="true">⠿</span>
+                <span className="task-name">
+                  <span className="milestone-icon" aria-hidden="true">◆</span>
+                  <span className="task-name-text milestone-name">{item.name}</span>
+                </span>
+                <span className="task-progress">—</span>
+                <span className="gantt-track gantt-track--milestone">
+                  {item.date && (
+                    <span
+                      className="milestone-diamond"
+                      style={{ left: `${leftPct(item.date)}%` }}
+                      title={item.date}
+                    />
+                  )}
+                </span>
+                <span className="milestone-badge">◆ 마일스톤</span>
+                <button className="icon-btn" aria-label={`${item.name} 수정`}
+                  onClick={() => setEditingItem(item)}>✏</button>
+                <button className="icon-btn" aria-label={`${item.name} 삭제`}
+                  onClick={() => confirm(`마일스톤 '${item.name}'을(를) 삭제할까요?`) && onRemove(item.id)}>🗑️</button>
+              </div>
+            )
+          }
+
+          // type === 'task' (or legacy items without type)
+          const delayed = hasDate(item) && isTaskDelayed(item, today)
           return (
-            <div key={t.id}
-              className={`gantt-row${dragOver === idx ? ' drag-over' : ''}${!hasDate(t) ? ' unscheduled' : ''}`}
-              draggable
-              onDragStart={(e) => { dragIdx.current = idx; e.dataTransfer.effectAllowed = 'move' }}
-              onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOver(idx) }}
-              onDragLeave={() => setDragOver(null)}
-              onDrop={() => {
-                if (dragIdx.current !== null && dragIdx.current !== idx) onReorder(dragIdx.current, idx)
-                setDragOver(null)
-                dragIdx.current = null
-              }}
-              onDragEnd={() => { setDragOver(null); dragIdx.current = null }}
+            <div key={item.id}
+              className={`gantt-row${dragOver === idx ? ' drag-over' : ''}${!hasDate(item) ? ' unscheduled' : ''}`}
+              {...makeRowHandlers(idx)}
             >
               <span className="drag-handle" aria-hidden="true">⠿</span>
               <span className="task-name">
-                <span className="task-name-text">{t.name}</span>
+                <span className="task-name-text">{item.name}</span>
               </span>
               <span className="task-progress">
-                <input type="number" min="0" max="100" value={t.progress} aria-label={`${t.name} 진척률`}
-                  onChange={(e) => onUpdate(t.id, { progress: Math.max(0, Math.min(100, Number(e.target.value) || 0)) })} />%
+                <input type="number" min="0" max="100" value={item.progress} aria-label={`${item.name} 진척률`}
+                  onChange={(e) => onUpdate(item.id, { progress: Math.max(0, Math.min(100, Number(e.target.value) || 0)) })} />%
               </span>
               <span className="gantt-track">
-                {hasDate(t) ? (
+                {hasDate(item) ? (
                   <span
-                    className={`gantt-bar ${t.progress === 100 ? 'done' : delayed ? 'delayed' : t.progress > 0 ? 'active' : 'scheduled'}`}
-                    style={{ left: `${leftPct(t.startDate)}%`, width: `${widthPct(t)}%` }}
-                    title={`${t.startDate} ~ ${t.endDate}`}
+                    className={`gantt-bar ${item.progress === 100 ? 'done' : delayed ? 'delayed' : item.progress > 0 ? 'active' : 'scheduled'}`}
+                    style={{ left: `${leftPct(item.startDate)}%`, width: `${widthPct(item)}%` }}
+                    title={`${item.startDate} ~ ${item.endDate}`}
                   />
                 ) : (
                   <span className="gantt-bar unscheduled" title="일정미정" />
                 )}
               </span>
-              <span className={`task-status ${delayed ? 'delayed' : ''}`}>{delayed ? '⚠ 지연' : hasDate(t) ? t.status : '일정미정'}</span>
-              <button className="icon-btn" aria-label={`${t.name} 수정`}
-                onClick={() => setEditingTask(t)}>✏</button>
-              <button className="icon-btn" aria-label={`${t.name} 삭제`}
-                onClick={() => confirm(`태스크 '${t.name}'을(를) 삭제할까요?`) && onRemove(t.id)}>🗑️</button>
+              <span className={`task-status ${delayed ? 'delayed' : ''}`}>{delayed ? '⚠ 지연' : hasDate(item) ? item.status : '일정미정'}</span>
+              <button className="icon-btn" aria-label={`${item.name} 수정`}
+                onClick={() => setEditingItem(item)}>✏</button>
+              <button className="icon-btn" aria-label={`${item.name} 삭제`}
+                onClick={() => confirm(`태스크 '${item.name}'을(를) 삭제할까요?`) && onRemove(item.id)}>🗑️</button>
             </div>
           )
         })}
-
-        {milestones.map((m, idx) => (
-          <div key={m.id}
-            className={`gantt-row milestone-row${dragOverMs === idx ? ' drag-over' : ''}`}
-            draggable
-            onDragStart={(e) => { dragMsIdx.current = idx; e.dataTransfer.effectAllowed = 'move' }}
-            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOverMs(idx) }}
-            onDragLeave={() => setDragOverMs(null)}
-            onDrop={() => {
-              if (dragMsIdx.current !== null && dragMsIdx.current !== idx) onMilestoneReorder(dragMsIdx.current, idx)
-              setDragOverMs(null)
-              dragMsIdx.current = null
-            }}
-            onDragEnd={() => { setDragOverMs(null); dragMsIdx.current = null }}
-          >
-            <span className="drag-handle" aria-hidden="true">⠿</span>
-            <span className="task-name">
-              <span className="milestone-icon" aria-hidden="true">◆</span>
-              <span className="task-name-text milestone-name">{m.name}</span>
-            </span>
-            <span className="task-progress">—</span>
-            <span className="gantt-track gantt-track--milestone">
-              {m.date && (
-                <span
-                  className="milestone-diamond"
-                  style={{ left: `${leftPct(m.date)}%` }}
-                  title={m.date}
-                />
-              )}
-            </span>
-            <span className="milestone-badge">◆ 마일스톤</span>
-            <button className="icon-btn" aria-label={`${m.name} 수정`}
-              onClick={() => setEditingMilestone(m)}>✏</button>
-            <button className="icon-btn" aria-label={`${m.name} 삭제`}
-              onClick={() => confirm(`마일스톤 '${m.name}'을(를) 삭제할까요?`) && onMilestoneRemove(m.id)}>🗑️</button>
-          </div>
-        ))}
       </div>
 
-      {editingTask && (
-        <TaskEditForm
-          task={editingTask}
-          onSubmit={(patch) => { onUpdate(editingTask.id, patch); setEditingTask(null) }}
-          onClose={() => setEditingTask(null)}
+      {editingItem && editingItem.type === 'milestone' && (
+        <MilestoneEditForm
+          milestone={editingItem}
+          onSubmit={(patch) => { onUpdate(editingItem.id, patch); setEditingItem(null) }}
+          onClose={() => setEditingItem(null)}
         />
       )}
-      {editingMilestone && (
-        <MilestoneEditForm
-          milestone={editingMilestone}
-          onSubmit={(patch) => { onMilestoneUpdate(editingMilestone.id, patch); setEditingMilestone(null) }}
-          onClose={() => setEditingMilestone(null)}
+      {editingItem && editingItem.type !== 'milestone' && (
+        <TaskEditForm
+          task={editingItem}
+          onSubmit={(patch) => { onUpdate(editingItem.id, patch); setEditingItem(null) }}
+          onClose={() => setEditingItem(null)}
         />
       )}
     </>

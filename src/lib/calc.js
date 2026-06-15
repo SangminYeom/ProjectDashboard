@@ -1,7 +1,7 @@
 // 진척률·지연·달성률 계산 (순수 함수)
 
 export function initiativeProgress(initiative) {
-  const tasks = initiative.tasks ?? []
+  const tasks = (initiative.items ?? initiative.tasks ?? []).filter(i => !i.type || i.type === 'task')
   if (tasks.length === 0) return 0
   const sum = tasks.reduce((acc, t) => acc + (t.progress ?? 0), 0)
   return Math.round(sum / tasks.length)
@@ -24,8 +24,8 @@ export function projectKpiAverage(project) {
 
 export function countDelayedTasks(project, today) {
   return (project.initiatives ?? [])
-    .flatMap((i) => i.tasks ?? [])
-    .filter((t) => isTaskDelayed(t, today)).length
+    .flatMap((i) => (i.items ?? i.tasks ?? []))
+    .filter((t) => (!t.type || t.type === 'task') && isTaskDelayed(t, today)).length
 }
 
 export function countOpenConsiderations(project) {

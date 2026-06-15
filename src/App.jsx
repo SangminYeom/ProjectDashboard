@@ -12,6 +12,17 @@ export default function App() {
   const [authed, setAuthed] = useState(null) // null=확인중, false=미인증, true=인증됨
   const saveRef = useRef(null)
 
+  function migrateInitiative(init) {
+    if (init.items !== undefined) return init
+    const taskItems = (init.tasks ?? []).map(t => ({ ...t, type: 'task' }))
+    const msItems = (init.milestones ?? []).map(m => ({ ...m, type: 'milestone' }))
+    return { ...init, items: [...taskItems, ...msItems], tasks: undefined, milestones: undefined }
+  }
+
+  function migrateProjects(projects) {
+    return projects.map(p => ({ ...p, initiatives: (p.initiatives ?? []).map(migrateInitiative) }))
+  }
+
   useEffect(() => {
     saveRef.current = createDebouncedSave({
       onError: (err) => {
@@ -24,7 +35,7 @@ export default function App() {
     loadProjects()
       .then(({ projects, recoveredFrom }) => {
         setAuthed(true)
-        setProjects(projects)
+        setProjects(migrateProjects(projects))
         if (recoveredFrom) {
           setNotice({ type: 'info', text: `데이터 파일이 손상되어 백업(${recoveredFrom})에서 복구했습니다.` })
         }

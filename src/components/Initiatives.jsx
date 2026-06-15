@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import Modal from './Modal.jsx'
 import Gantt from './Gantt.jsx'
 import { initiativeProgress } from '../lib/calc.js'
@@ -12,7 +12,6 @@ export default function Initiatives({ initiatives, onChange }) {
   const [milestoneFormFor, setMilestoneFormFor] = useState(null)
   const [collapsed, setCollapsed] = useState({})
   const [dragOver, setDragOver] = useState(null)
-  const dragIdx = useRef(null)
 
   function updateInit(id, updater) {
     onChange(initiatives.map((i) => (i.id === id ? updater(i) : i)))
@@ -28,27 +27,28 @@ export default function Initiatives({ initiatives, onChange }) {
   return (
     <section>
       {initiatives.map((init, idx) => {
-        const msCount = init.milestones?.length ?? 0
+        const taskCount = (init.items ?? []).filter(i => i.type === 'task').length
+        const msCount = (init.items ?? []).filter(i => i.type === 'milestone').length
         return (
           <div key={init.id}
             className={`initiative-card${dragOver === idx ? ' drag-over' : ''}`}
             draggable
-            onDragStart={(e) => { dragIdx.current = idx; e.dataTransfer.effectAllowed = 'move' }}
-            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOver(idx) }}
+            onDragStart={(e) => { e.dataTransfer.setData('application/initiative-idx', String(idx)); e.dataTransfer.effectAllowed = 'move' }}
+            onDragOver={(e) => { if (!e.dataTransfer.types.includes('application/initiative-idx')) return; e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOver(idx) }}
             onDragLeave={() => setDragOver(null)}
-            onDrop={() => {
-              if (dragIdx.current !== null && dragIdx.current !== idx) reorderInit(dragIdx.current, idx)
+            onDrop={(e) => {
+              const from = parseInt(e.dataTransfer.getData('application/initiative-idx'), 10)
+              if (!isNaN(from) && from !== idx) reorderInit(from, idx)
               setDragOver(null)
-              dragIdx.current = null
             }}
-            onDragEnd={() => { setDragOver(null); dragIdx.current = null }}
+            onDragEnd={() => setDragOver(null)}
           >
             <div className="initiative-head"
               onClick={() => setCollapsed({ ...collapsed, [init.id]: !collapsed[init.id] })}>
               <span className="drag-handle" aria-hidden="true">⠿</span>
               <strong>{init.name}</strong>
               <span className="meta">
-                진척 {initiativeProgress(init)}% · 태스크 {init.tasks.length}건
+                진척 {initiativeProgress(init)}% · 태스크 {taskCount}건
                 {msCount > 0 ? ` · 마일스톤 ${msCount}건` : ''}
                 {init.owner ? ` · 담당 ${init.owner}` : ''}
               </span>
@@ -63,27 +63,18 @@ export default function Initiatives({ initiatives, onChange }) {
             {!collapsed[init.id] && (
               <div className="initiative-body">
                 <Gantt
-                  tasks={init.tasks}
-                  onUpdate={(taskId, patch) => updateInit(init.id,
-                    (i) => ({ ...i, tasks: i.tasks.map((t) => (t.id === taskId ? { ...t, ...patch } : t)) }))}
-                  onRemove={(taskId) => updateInit(init.id,
-                    (i) => ({ ...i, tasks: i.tasks.filter((t) => t.id !== taskId) }))}
+                  items={init.items ?? []}
+                  onUpdate={(itemId, patch) => updateInit(init.id, (i) => ({
+                    ...i, items: (i.items ?? []).map(item => item.id === itemId ? { ...item, ...patch } : item)
+                  }))}
+                  onRemove={(itemId) => updateInit(init.id, (i) => ({
+                    ...i, items: (i.items ?? []).filter(item => item.id !== itemId)
+                  }))}
                   onReorder={(fromIdx, toIdx) => updateInit(init.id, (i) => {
-                    const tasks = [...i.tasks]
-                    const [item] = tasks.splice(fromIdx, 1)
-                    tasks.splice(toIdx, 0, item)
-                    return { ...i, tasks }
-                  })}
-                  milestones={init.milestones ?? []}
-                  onMilestoneUpdate={(msId, patch) => updateInit(init.id,
-                    (i) => ({ ...i, milestones: (i.milestones ?? []).map((m) => (m.id === msId ? { ...m, ...patch } : m)) }))}
-                  onMilestoneRemove={(msId) => updateInit(init.id,
-                    (i) => ({ ...i, milestones: (i.milestones ?? []).filter((m) => m.id !== msId) }))}
-                  onMilestoneReorder={(fromIdx, toIdx) => updateInit(init.id, (i) => {
-                    const milestones = [...(i.milestones ?? [])]
-                    const [item] = milestones.splice(fromIdx, 1)
-                    milestones.splice(toIdx, 0, item)
-                    return { ...i, milestones }
+                    const items = [...(i.items ?? [])]
+                    const [item] = items.splice(fromIdx, 1)
+                    items.splice(toIdx, 0, item)
+                    return { ...i, items }
                   })}
                 />
                 <div className="initiative-add-btns">
@@ -100,7 +91,7 @@ export default function Initiatives({ initiatives, onChange }) {
       {addingInit && (
         <InitiativeForm
           onSubmit={(form) => {
-            onChange([...initiatives, { id: crypto.randomUUID(), ...form, tasks: [], milestones: [] }])
+            onChange([...initiatives, { id: crypto.randomUUID(), ...form, items: [] }])
             setAddingInit(false)
           }}
           onClose={() => setAddingInit(false)}
@@ -119,7 +110,7 @@ export default function Initiatives({ initiatives, onChange }) {
       {taskFormFor && (
         <TaskForm
           onSubmit={(task) => {
-            updateInit(taskFormFor, (i) => ({ ...i, tasks: [...i.tasks, { id: crypto.randomUUID(), ...task }] }))
+            updateInit(taskFormFor, (i) => ({ ...i, items: [...(i.items ?? []), { id: crypto.randomUUID(), type: 'task', ...task }] }))
             setTaskFormFor(null)
           }}
           onClose={() => setTaskFormFor(null)}
@@ -130,7 +121,7 @@ export default function Initiatives({ initiatives, onChange }) {
           onSubmit={(ms) => {
             updateInit(milestoneFormFor, (i) => ({
               ...i,
-              milestones: [...(i.milestones ?? []), { id: crypto.randomUUID(), ...ms }],
+              items: [...(i.items ?? []), { id: crypto.randomUUID(), type: 'milestone', ...ms }],
             }))
             setMilestoneFormFor(null)
           }}
