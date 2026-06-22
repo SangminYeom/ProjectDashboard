@@ -222,6 +222,9 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .task-name-text { font-size: 13px; color: #1d1d1f; word-break: keep-all; line-height: 1.4; }
 .task-progress { width: 70px; flex-shrink: 0; font-size: 13px; color: #86868b; }
 .task-progress input { width: 52px; padding: 2px 4px; font-size: 12px; }
+.task-date { width: 110px; flex-shrink: 0; font-size: 11px; color: #86868b; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.task-date--header { font-size: 11px; color: #aeaeb2; }
+.gantt-row.unscheduled .task-date { color: #c7c7cc; }
 .gantt-track { position: relative; flex: 1; height: 4px; background: #e8e8ed; border-radius: 2px; overflow: visible; }
 .gantt-bar { position: absolute; top: 0; height: 4px; border-radius: 2px; }
 .gantt-bar.done        { background: #30d158; }

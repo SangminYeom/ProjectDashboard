@@ -40,5 +40,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     dataPath: path.join(__dirname, 'data', 'projects.json'),
     backupDir: path.join(__dirname, 'data', 'backups'),
   })
-  app.listen(3000, () => console.log('대시보드 실행 중: http://localhost:3000'))
+  app.listen(3001, () => console.log('대시보드 API 실행 중: http://localhost:3001'))
 }

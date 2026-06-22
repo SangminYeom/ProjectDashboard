@@ -6,6 +6,7 @@ const TASK_STATUS = ['예정', '진행중', '완료', '보류']
 const toMs = (d) => new Date(d + 'T00:00:00').getTime()
 
 const N_TICKS = 5
+const fmtDate = (d) => { const [, m, day] = d.split('-'); return `${+m}.${day}` }
 
 function buildTicks(minMs, maxMs) {
   return Array.from({ length: N_TICKS }, (_, i) => {
@@ -62,6 +63,7 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
           <span className="drag-handle-col" />
           <span className="task-name" />
           <span className="task-progress" />
+          <span className="task-date task-date--header">기간</span>
           <span className="gantt-track gantt-track--header">
             {ticks.map(({ label }, i) => (
               <span
@@ -92,6 +94,7 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
                   <span className="task-name-text milestone-name">{item.name}</span>
                 </span>
                 <span className="task-progress">—</span>
+                <span className="task-date">{item.date ? fmtDate(item.date) : '—'}</span>
                 <span className="gantt-track gantt-track--milestone">
                   {item.date && (
                     <span
@@ -124,6 +127,9 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
               <span className="task-progress">
                 <input type="number" min="0" max="100" value={item.progress} aria-label={`${item.name} 진척률`}
                   onChange={(e) => onUpdate(item.id, { progress: Math.max(0, Math.min(100, Number(e.target.value) || 0)) })} />%
+              </span>
+              <span className="task-date">
+                {hasDate(item) ? `${fmtDate(item.startDate)}~${fmtDate(item.endDate)}` : '—'}
               </span>
               <span className="gantt-track">
                 {hasDate(item) ? (
