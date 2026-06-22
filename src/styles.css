@@ -46,9 +46,9 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .link-btn:hover { text-decoration: underline; }
 
 /* ===== 홈 ===== */
-.home-header { margin-bottom: 40px; }
-.home-title { font-size: 30px; font-weight: 700; letter-spacing: -.6px; color: #1d1d1f; }
-.home-subtitle { margin: 4px 0 0; font-size: 14px; font-weight: 400; color: #86868b; letter-spacing: 0; }
+.home-header { margin-bottom: 48px; }
+.home-title { font-size: 44px; font-weight: 800; letter-spacing: -1.5px; color: #1d1d1f; line-height: 1.05; }
+.home-subtitle { margin: 6px 0 0; font-size: 15px; font-weight: 400; color: #86868b; letter-spacing: 0; }
 .home-stats { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 13px; color: #6e6e73; }
 .home-stat { display: flex; align-items: center; gap: 5px; }
 .home-stat--warn  { color: #ff9f0a; }
@@ -61,15 +61,18 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
   grid-template-columns: 1fr;
   gap: 20px;
 }
+@media (min-width: 720px) {
+  .card-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+}
 .project-card {
-  background: #fff; border-radius: 18px; padding: 26px 24px;
+  background: #fff; border-radius: 22px; padding: 30px 28px;
   text-align: left; border: none; width: 100%;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04), 0 0 1px rgba(0,0,0,.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,.05), 0 0 1px rgba(0,0,0,.06);
   transition: transform .2s ease, box-shadow .2s ease; cursor: pointer;
 }
 .project-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0,0,0,.08), 0 0 1px rgba(0,0,0,.06);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 44px rgba(0,0,0,.10), 0 0 1px rgba(0,0,0,.06);
 }
 .add-card {
   display: flex; align-items: center; justify-content: center;
@@ -79,9 +82,9 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .add-card:hover { border-color: #86868b; transform: none; box-shadow: none; }
 
 /* 카드 내부 */
-.card-head { margin-bottom: 20px; }
-.card-name { font-size: 18px; font-weight: 600; color: #1d1d1f; letter-spacing: -.4px; }
-.card-period { font-size: 12px; color: #86868b; margin-top: 3px; }
+.card-head { margin-bottom: 24px; }
+.card-name { font-size: 19px; font-weight: 700; color: #1d1d1f; letter-spacing: -.5px; }
+.card-period { font-size: 12px; color: #86868b; margin-top: 4px; }
 
 /* 섹션 레이블 (홈 카드 + 상세 공통) */
 .sec {
@@ -90,12 +93,12 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 }
 
 /* 중점수행과제 리스트 */
-.ini-list { margin-bottom: 20px; }
-.ini-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.ini-list { margin-bottom: 24px; }
+.ini-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .ini-row:last-child { margin-bottom: 0; }
 .ini-name { font-size: 13px; color: #1d1d1f; flex-shrink: 0; }
-.ini-track { flex: 1; height: 2px; background: #e8e8ed; border-radius: 1px; overflow: hidden; min-width: 40px; }
-.ini-fill  { height: 100%; border-radius: 1px; background: #1d1d1f; }
+.ini-track { flex: 1; height: 3px; background: #e8e8ed; border-radius: 2px; overflow: hidden; min-width: 40px; }
+.ini-fill  { height: 100%; border-radius: 2px; background: #1d1d1f; }
 .ini-pct   { font-size: 11px; color: #86868b; flex-shrink: 0; width: 26px; text-align: right; }
 
 /* KPI 리스트 (홈 카드) */
@@ -129,7 +132,7 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .op-item-cycle { font-size: 11px; color: #86868b; }
 
 /* 카드 푸터 */
-.card-footer { display: flex; gap: 14px; padding-top: 10px; border-top: 1px solid #f0f0f2; flex-wrap: wrap; margin-top: 4px; }
+.card-footer { display: flex; gap: 16px; padding-top: 14px; border-top: 1px solid #f0f0f2; flex-wrap: wrap; margin-top: 6px; }
 .stat { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #86868b; }
 
 /* 상태 dot (공통) */
