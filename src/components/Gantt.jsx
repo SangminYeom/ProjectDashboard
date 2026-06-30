@@ -8,11 +8,45 @@ const toMs = (d) => new Date(d + 'T00:00:00').getTime()
 const N_TICKS = 5
 const fmtDate = (d) => { const [, m, day] = d.split('-'); return `${+m}.${day}` }
 
+function countWorkdaysBefore(fromMs, targetMs) {
+  const start = new Date(fromMs); start.setHours(0, 0, 0, 0)
+  const end = new Date(targetMs); end.setHours(0, 0, 0, 0)
+  let count = 0
+  const d = new Date(start)
+  while (d.getTime() < end.getTime()) {
+    const dow = d.getDay()
+    if (dow !== 0 && dow !== 6) count++
+    d.setDate(d.getDate() + 1)
+  }
+  return count
+}
+
+function countWorkdaysInRange(fromMs, toMs) {
+  const start = new Date(fromMs); start.setHours(0, 0, 0, 0)
+  const end = new Date(toMs); end.setHours(0, 0, 0, 0)
+  let count = 0
+  const d = new Date(start)
+  while (d.getTime() <= end.getTime()) {
+    const dow = d.getDay()
+    if (dow !== 0 && dow !== 6) count++
+    d.setDate(d.getDate() + 1)
+  }
+  return Math.max(count, 1)
+}
+
 function buildTicks(minMs, maxMs) {
+  const total = countWorkdaysInRange(minMs, maxMs)
   return Array.from({ length: N_TICKS }, (_, i) => {
-    const ms = minMs + Math.round((maxMs - minMs) * i / (N_TICKS - 1))
-    const d = new Date(ms)
-    return { ms, label: `${d.getMonth() + 1}월${Math.ceil(d.getDate() / 7)}주` }
+    const targetIdx = Math.round((total - 1) * i / (N_TICKS - 1))
+    const d = new Date(minMs); d.setHours(0, 0, 0, 0)
+    while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1)
+    let found = 0
+    while (found < targetIdx) {
+      d.setDate(d.getDate() + 1)
+      while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1)
+      found++
+    }
+    return { label: `${d.getMonth() + 1}월${Math.ceil(d.getDate() / 7)}주` }
   })
 }
 
@@ -34,9 +68,9 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
   const maxMs = (dated.length || msDates.length)
     ? Math.max(...dated.map(t => toMs(t.endDate)), ...msDates, toMs(today))
     : toMs(today) + 86400000 * 30
-  const span = Math.max(maxMs - minMs, 1)
-  const leftPct = (d) => ((toMs(d) - minMs) / span) * 100
-  const widthPct = (t) => Math.max(((toMs(t.endDate) - toMs(t.startDate)) / span) * 100, 1)
+  const totalWorkdays = countWorkdaysInRange(minMs, maxMs)
+  const leftPct = (d) => (countWorkdaysBefore(minMs, toMs(d)) / totalWorkdays) * 100
+  const widthPct = (t) => Math.max((countWorkdaysInRange(toMs(t.startDate), toMs(t.endDate)) / totalWorkdays) * 100, 1)
   const ticks = buildTicks(minMs, maxMs)
 
   function makeRowHandlers(idx) {
