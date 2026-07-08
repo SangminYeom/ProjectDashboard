@@ -14,9 +14,9 @@ const project = {
     id: 'i1', name: '인프라 전환', description: '', owner: '',
     tasks: [],
     milestones: [{ id: 'm1', name: '시스템 오픈', date: '2026-09-01' }],
+    issues: [{ id: 'is1', content: '계약 지연', response: '', importance: '상', status: '열림', createdDate: '2026-06-01', resolvedDate: null }],
   }],
   operations: [{ id: 'o1', name: '주간 보고', cycle: '주', owner: '', status: '정상', memo: '' }],
-  considerations: [{ id: 'c1', title: '계약 지연', content: '', response: '', severity: '높음', status: '열림', createdDate: '2026-06-01', resolvedDate: null }],
 }
 
 function setup() {
@@ -38,8 +38,13 @@ it('탭 전환이 동작한다', () => {
   setup()
   fireEvent.click(screen.getByRole('button', { name: /운영업무/ }))
   expect(screen.getByDisplayValue('주간 보고')).toBeInTheDocument()
-  fireEvent.click(screen.getByRole('button', { name: /고려사항/ }))
+  fireEvent.click(screen.getByRole('button', { name: /중점수행과제/ }))
   expect(screen.getAllByText('계약 지연')[0]).toBeInTheDocument()
+})
+
+it('고려사항 탭이 더 이상 존재하지 않는다', () => {
+  setup()
+  expect(screen.queryByRole('button', { name: /고려사항/ })).not.toBeInTheDocument()
 })
 
 it('뒤로 가기 버튼이 onBack을 호출한다', () => {

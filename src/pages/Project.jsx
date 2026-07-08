@@ -3,11 +3,10 @@ import { toPng } from 'html-to-image'
 import KpiBar from '../components/KpiBar.jsx'
 import Initiatives from '../components/Initiatives.jsx'
 import OperationsTable from '../components/OperationsTable.jsx'
-import ConsiderationLog from '../components/ConsiderationLog.jsx'
 import Modal from '../components/Modal.jsx'
-import { countOpenConsiderations, kpiRate, initiativeProgress } from '../lib/calc.js'
+import { kpiRate, initiativeProgress } from '../lib/calc.js'
 
-const TABS = ['중점수행과제', '운영업무', '고려사항']
+const TABS = ['중점수행과제', '운영업무']
 
 export default function Project({ project, onChange, onDelete, onBack }) {
   const [tab, setTab] = useState(TABS[0])
@@ -16,7 +15,6 @@ export default function Project({ project, onChange, onDelete, onBack }) {
   const counts = {
     중점수행과제: project.initiatives.length,
     운영업무: project.operations.length,
-    고려사항: countOpenConsiderations(project),
   }
 
   function handleExport() {
@@ -74,19 +72,14 @@ export default function Project({ project, onChange, onDelete, onBack }) {
         <OperationsTable operations={project.operations}
           onChange={(operations) => onChange((p) => ({ ...p, operations }))} />
       )}
-      {tab === '고려사항' && (
-        <ConsiderationLog considerations={project.considerations}
-          onChange={(considerations) => onChange((p) => ({ ...p, considerations }))} />
-      )}
-
       <ProjectSnapshot ref={reportRef} project={project} />
     </div>
   )
 }
 
 const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
-  const openConsid = project.considerations.filter((c) => c.status !== '해결')
-  const sevDot = (s) => s === '높음' ? 'dot-red' : s === '중간' ? 'dot-amber' : 'dot-green'
+  const openIssues = project.initiatives.flatMap((i) => i.issues ?? []).filter((iss) => iss.status !== '해결')
+  const impDot = (s) => s === '상' ? 'dot-red' : s === '중' ? 'dot-amber' : 'dot-green'
 
   return (
     <div ref={ref} className="project-snapshot" aria-hidden="true">
@@ -163,14 +156,14 @@ const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
         </div>
       )}
 
-      {openConsid.length > 0 && (
+      {openIssues.length > 0 && (
         <div className="card-chip">
-          <div className="sec">고려사항</div>
+          <div className="sec">쟁점</div>
           <div className="op-list">
-            {openConsid.map((c) => (
-              <div key={c.id} className="op-row">
-                <span className={`dot ${sevDot(c.severity)}`} />
-                <span className="op-item-name">{c.title}</span>
+            {openIssues.map((iss) => (
+              <div key={iss.id} className="op-row">
+                <span className={`dot ${impDot(iss.importance)}`} />
+                <span className="op-item-name">{iss.content}</span>
               </div>
             ))}
           </div>
