@@ -32,6 +32,14 @@ export function countOpenConsiderations(project) {
   return (project.considerations ?? []).filter((c) => c.status !== '해결').length
 }
 
+export function initiativeOpenIssueCount(initiative) {
+  return (initiative.issues ?? []).filter((i) => i.status !== '해결').length
+}
+
+export function countOpenIssues(project) {
+  return (project.initiatives ?? []).reduce((sum, i) => sum + initiativeOpenIssueCount(i), 0)
+}
+
 export function todayStr(now = new Date()) {
   const y = now.getFullYear()
   const m = String(now.getMonth() + 1).padStart(2, '0')
