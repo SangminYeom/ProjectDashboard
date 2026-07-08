@@ -4,7 +4,7 @@ import { vi } from 'vitest'
 const { sample, saveMock } = vi.hoisted(() => {
   const sample = {
     id: 'p1', name: '차세대 시스템', description: '', startDate: '2026-01-01', endDate: '2026-12-31',
-    kpis: [], initiatives: [], operations: [], considerations: [],
+    kpis: [], initiatives: [], operations: [],
   }
   const saveMock = vi.fn()
   return { sample, saveMock }

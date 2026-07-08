@@ -28,10 +28,6 @@ export function countDelayedTasks(project, today) {
     .filter((t) => (!t.type || t.type === 'task') && isTaskDelayed(t, today)).length
 }
 
-export function countOpenConsiderations(project) {
-  return (project.considerations ?? []).filter((c) => c.status !== '해결').length
-}
-
 export function initiativeOpenIssueCount(initiative) {
   return (initiative.issues ?? []).filter((i) => i.status !== '해결').length
 }

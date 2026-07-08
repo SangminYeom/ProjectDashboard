@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   initiativeProgress, isTaskDelayed, kpiRate, projectKpiAverage,
-  countDelayedTasks, countOpenConsiderations, initiativeOpenIssueCount, countOpenIssues, todayStr,
+  countDelayedTasks, initiativeOpenIssueCount, countOpenIssues, todayStr,
 } from '../src/lib/calc.js'
 
 describe('initiativeProgress', () => {
@@ -77,15 +77,6 @@ describe('countDelayedTasks', () => {
   it('initiatives나 tasks 키가 없어도 0', () => {
     expect(countDelayedTasks({}, '2026-06-07')).toBe(0)
     expect(countDelayedTasks({ initiatives: [{}] }, '2026-06-07')).toBe(0)
-  })
-})
-
-describe('countOpenConsiderations', () => {
-  it('해결 상태가 아닌 건만 센다', () => {
-    const p = { considerations: [
-      { status: '열림' }, { status: '대응중' }, { status: '해결' },
-    ] }
-    expect(countOpenConsiderations(p)).toBe(2)
   })
 })
 
