@@ -5,6 +5,7 @@ import { todayStr } from '../lib/calc.js'
 const IMPORTANCES = ['상', '중', '하']
 const STATUSES = ['열림', '대응중', '해결']
 const IMP_CLASS = { 상: 'high', 중: 'mid', 하: 'low' }
+const STATUS_CLASS = { 열림: 'open', 대응중: 'progress', 해결: 'resolved' }
 
 export default function IssueLog({ issues, onChange }) {
   const [adding, setAdding] = useState(false)
@@ -88,10 +89,12 @@ export default function IssueLog({ issues, onChange }) {
 }
 
 function IssueCard({ issue, onStatus, onEdit, onRemove, draggableProps }) {
-  const cls = IMP_CLASS[issue.importance]
+  const [expanded, setExpanded] = useState(false)
+  const impCls = IMP_CLASS[issue.importance]
+  const statusCls = STATUS_CLASS[issue.status]
   return (
     <div
-      className={`issue-card imp-${cls}${draggableProps?.dragOver ? ' drag-over' : ''}`}
+      className={`issue-card${draggableProps?.dragOver ? ' drag-over' : ''}`}
       draggable={!!draggableProps}
       onDragStart={draggableProps?.onDragStart}
       onDragOver={draggableProps?.onDragOver}
@@ -99,18 +102,37 @@ function IssueCard({ issue, onStatus, onEdit, onRemove, draggableProps }) {
       onDrop={draggableProps?.onDrop}
       onDragEnd={draggableProps?.onDragEnd}
     >
-      <div className="issue-card-head">
+      <div className="issue-row">
         {draggableProps && <span className="drag-handle" aria-hidden="true">⠿</span>}
-        <span className={`badge imp-${cls}`}>{issue.importance}</span>
+        <span className={`imp-dot imp-${impCls}`} aria-hidden="true" title={`중요도 ${issue.importance}`} />
         <p className="issue-content">{issue.content}</p>
-        <select value={issue.status} aria-label={`${issue.content} 상태`} onChange={(e) => onStatus(issue, e.target.value)}>
+        <select
+          className={`status-select status-${statusCls}`}
+          value={issue.status}
+          aria-label={`${issue.content} 상태`}
+          onChange={(e) => onStatus(issue, e.target.value)}
+        >
           {STATUSES.map((s) => <option key={s}>{s}</option>)}
         </select>
-        <button className="icon-btn" onClick={onEdit} aria-label={`${issue.content} 편집`}>✏</button>
-        <button className="icon-btn" onClick={onRemove} aria-label={`${issue.content} 삭제`}>🗑️</button>
+        <span className="issue-actions">
+          <button className="icon-btn" onClick={onEdit} aria-label={`${issue.content} 편집`}>✏</button>
+          <button className="icon-btn" onClick={onRemove} aria-label={`${issue.content} 삭제`}>🗑️</button>
+        </span>
       </div>
-      {issue.response && <p className="response">대응안: {issue.response}</p>}
-      <p className="meta">등록 {issue.createdDate}{issue.resolvedDate ? ` · 해결 ${issue.resolvedDate}` : ''}</p>
+      {issue.response && (
+        <button
+          type="button"
+          className={`issue-response${expanded ? ' expanded' : ''}`}
+          aria-label={`${issue.content} 대응안 ${expanded ? '접기' : '펼치기'}`}
+          onClick={() => setExpanded(!expanded)}
+        >
+          <span className="issue-response-arrow" aria-hidden="true">↳</span>
+          <span className="issue-response-text">{issue.response}</span>
+        </button>
+      )}
+      {expanded && (
+        <p className="meta">등록 {issue.createdDate}{issue.resolvedDate ? ` · 해결 ${issue.resolvedDate}` : ''}</p>
+      )}
     </div>
   )
 }

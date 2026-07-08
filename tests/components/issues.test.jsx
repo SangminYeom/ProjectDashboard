@@ -58,3 +58,18 @@ it('쟁점을 삭제할 수 있다', () => {
   fireEvent.click(screen.getByLabelText('벤더 계약 지연 삭제'))
   expect(onChange.mock.calls[0][0].map((i) => i.id)).toEqual(['i2', 'i3'])
 })
+
+it('대응안이 있으면 접힌 상태로 표시되고, 클릭하면 등록일이 펼쳐진다', () => {
+  render(<IssueLog issues={issues} onChange={() => {}} />)
+  expect(screen.getByText('대체 벤더 확보')).toBeInTheDocument()
+  expect(screen.queryByText(/등록 2026-06-01/)).not.toBeInTheDocument()
+  fireEvent.click(screen.getByLabelText('벤더 계약 지연 대응안 펼치기'))
+  expect(screen.getByText(/등록 2026-06-01/)).toBeInTheDocument()
+  fireEvent.click(screen.getByLabelText('벤더 계약 지연 대응안 접기'))
+  expect(screen.queryByText(/등록 2026-06-01/)).not.toBeInTheDocument()
+})
+
+it('대응안이 없으면 대응안 버튼이 렌더링되지 않는다', () => {
+  render(<IssueLog issues={issues} onChange={() => {}} />)
+  expect(screen.queryByLabelText('인력 이탈 리스크 대응안 펼치기')).not.toBeInTheDocument()
+})
