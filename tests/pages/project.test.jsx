@@ -38,8 +38,9 @@ it('탭 전환이 동작한다', () => {
   setup()
   fireEvent.click(screen.getByRole('button', { name: /운영업무/ }))
   expect(screen.getByDisplayValue('주간 보고')).toBeInTheDocument()
+  expect(screen.getAllByText('계약 지연')).toHaveLength(1) // 스냅샷에만 존재
   fireEvent.click(screen.getByRole('button', { name: /중점수행과제/ }))
-  expect(screen.getAllByText('계약 지연')[0]).toBeInTheDocument()
+  expect(screen.getAllByText('계약 지연')).toHaveLength(2) // 스냅샷 + 탭 콘텐츠(과제 카드 내 쟁점)
 })
 
 it('고려사항 탭이 더 이상 존재하지 않는다', () => {
