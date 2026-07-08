@@ -14,8 +14,8 @@ export default function Home({ projects, onOpen, onChange }) {
 
       <div className="card-grid">
         {projects.map((p) => {
-          const openConsid = p.considerations.filter((c) => c.status !== '해결')
-          const sevDot = (s) => s === '높음' ? 'dot-red' : s === '중간' ? 'dot-amber' : 'dot-green'
+          const openIssues = p.initiatives.flatMap((i) => i.issues ?? []).filter((iss) => iss.status !== '해결')
+          const impDot = (s) => s === '상' ? 'dot-red' : s === '중' ? 'dot-amber' : 'dot-green'
           return (
             <button key={p.id} className="project-card" onClick={() => onOpen(p.id)}>
               <div className="card-head">
@@ -82,14 +82,14 @@ export default function Home({ projects, onOpen, onChange }) {
                 </div>
               )}
 
-              {openConsid.length > 0 && (
+              {openIssues.length > 0 && (
                 <div className="card-chip">
-                  <div className="sec">고려사항</div>
+                  <div className="sec">쟁점</div>
                   <div className="op-list">
-                    {openConsid.map((c) => (
-                      <div key={c.id} className="op-row">
-                        <span className={`dot ${sevDot(c.severity)}`} />
-                        <span className="op-item-name">{c.title}</span>
+                    {openIssues.map((iss) => (
+                      <div key={iss.id} className="op-row">
+                        <span className={`dot ${impDot(iss.importance)}`} />
+                        <span className="op-item-name">{iss.content}</span>
                       </div>
                     ))}
                   </div>
@@ -106,7 +106,7 @@ export default function Home({ projects, onOpen, onChange }) {
           onSubmit={(form) => {
             onChange([...projects, {
               id: crypto.randomUUID(), ...form,
-              kpis: [], initiatives: [], operations: [], considerations: [],
+              kpis: [], initiatives: [], operations: [],
             }])
             setAdding(false)
           }}
