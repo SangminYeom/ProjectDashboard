@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   initiativeProgress, isTaskDelayed, kpiRate, projectKpiAverage,
-  countDelayedTasks, countOpenConsiderations, todayStr,
+  countDelayedTasks, initiativeOpenIssueCount, countOpenIssues, todayStr,
 } from '../src/lib/calc.js'
 
 describe('initiativeProgress', () => {
@@ -80,12 +80,27 @@ describe('countDelayedTasks', () => {
   })
 })
 
-describe('countOpenConsiderations', () => {
-  it('해결 상태가 아닌 건만 센다', () => {
-    const p = { considerations: [
-      { status: '열림' }, { status: '대응중' }, { status: '해결' },
+describe('initiativeOpenIssueCount', () => {
+  it('해결 상태가 아닌 쟁점만 센다', () => {
+    const init = { issues: [{ status: '열림' }, { status: '대응중' }, { status: '해결' }] }
+    expect(initiativeOpenIssueCount(init)).toBe(2)
+  })
+  it('issues 키가 없으면 0', () => {
+    expect(initiativeOpenIssueCount({})).toBe(0)
+  })
+})
+
+describe('countOpenIssues', () => {
+  it('모든 과제의 미해결 쟁점 수를 합산', () => {
+    const p = { initiatives: [
+      { issues: [{ status: '열림' }, { status: '해결' }] },
+      { issues: [{ status: '대응중' }] },
     ] }
-    expect(countOpenConsiderations(p)).toBe(2)
+    expect(countOpenIssues(p)).toBe(2)
+  })
+  it('initiatives나 issues 키가 없어도 0', () => {
+    expect(countOpenIssues({})).toBe(0)
+    expect(countOpenIssues({ initiatives: [{}] })).toBe(0)
   })
 })
 

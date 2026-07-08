@@ -4,11 +4,14 @@ import Initiatives from '../../src/components/Initiatives.jsx'
 
 const initiatives = [{
   id: 'i1', name: '인프라 전환', description: '', owner: '홍길동',
-  tasks: [
-    { id: 't1', name: '서버 이전', startDate: '2026-01-01', endDate: '2026-03-31', progress: 100, status: '완료' },
-    { id: 't2', name: 'DB 이전', startDate: '2026-03-01', endDate: '2026-08-31', progress: 60, status: '진행중' },
+  items: [
+    { id: 't1', type: 'task', name: '서버 이전', startDate: '2026-01-01', endDate: '2026-03-31', progress: 100, status: '완료' },
+    { id: 't2', type: 'task', name: 'DB 이전', startDate: '2026-03-01', endDate: '2026-08-31', progress: 60, status: '진행중' },
+    { id: 'm1', type: 'milestone', name: '시스템 오픈', date: '2026-09-01' },
   ],
-  milestones: [{ id: 'm1', name: '시스템 오픈', date: '2026-09-01' }],
+  issues: [
+    { id: 'is1', content: '벤더 리스크', response: '', importance: '상', status: '열림', createdDate: '2026-06-01', resolvedDate: null },
+  ],
 }]
 
 it('과제명·자동 계산 진척률·담당자를 표시한다', () => {
@@ -18,14 +21,14 @@ it('과제명·자동 계산 진척률·담당자를 표시한다', () => {
   expect(screen.getByText(/담당 홍길동/)).toBeInTheDocument()
 })
 
-it('과제 추가 폼으로 새 과제를 추가한다', () => {
+it('과제 추가 폼으로 새 과제를 추가한다 (items·issues 빈 배열 포함)', () => {
   const onChange = vi.fn()
   render(<Initiatives initiatives={[]} onChange={onChange} />)
   fireEvent.click(screen.getByText('+ 과제 추가'))
   fireEvent.change(screen.getByLabelText(/과제명/), { target: { value: '데이터 표준화' } })
   fireEvent.click(screen.getByRole('button', { name: '추가' }))
   const added = onChange.mock.calls[0][0][0]
-  expect(added).toMatchObject({ name: '데이터 표준화', tasks: [], milestones: [] })
+  expect(added).toMatchObject({ name: '데이터 표준화', items: [], issues: [] })
 })
 
 it('태스크 추가 폼으로 과제에 태스크를 추가한다', () => {
@@ -37,15 +40,8 @@ it('태스크 추가 폼으로 과제에 태스크를 추가한다', () => {
   fireEvent.change(screen.getByLabelText(/종료일/), { target: { value: '2026-09-30' } })
   fireEvent.click(screen.getByRole('button', { name: '추가' }))
   const updated = onChange.mock.calls[0][0][0]
-  expect(updated.tasks).toHaveLength(3)
-  expect(updated.tasks[2]).toMatchObject({ name: '모니터링', progress: 0, status: '예정' })
-})
-
-it('과제 헤더 클릭으로 접고 펼친다', () => {
-  render(<Initiatives initiatives={initiatives} onChange={() => {}} />)
-  expect(screen.getByText('서버 이전')).toBeInTheDocument()
-  fireEvent.click(screen.getByText('인프라 전환'))
-  expect(screen.queryByText('서버 이전')).not.toBeInTheDocument()
+  expect(updated.items).toHaveLength(4)
+  expect(updated.items[3]).toMatchObject({ type: 'task', name: '모니터링', progress: 0, status: '예정' })
 })
 
 it('마일스톤 추가 폼으로 마일스톤을 추가한다', () => {
@@ -56,8 +52,15 @@ it('마일스톤 추가 폼으로 마일스톤을 추가한다', () => {
   fireEvent.change(screen.getByLabelText(/날짜/), { target: { value: '2026-10-01' } })
   fireEvent.click(screen.getByRole('button', { name: '추가' }))
   const updated = onChange.mock.calls[0][0][0]
-  expect(updated.milestones).toHaveLength(2)
-  expect(updated.milestones[1]).toMatchObject({ name: '서비스 배포일', date: '2026-10-01' })
+  expect(updated.items).toHaveLength(4)
+  expect(updated.items[3]).toMatchObject({ type: 'milestone', name: '서비스 배포일', date: '2026-10-01' })
+})
+
+it('과제 헤더 클릭으로 접고 펼친다', () => {
+  render(<Initiatives initiatives={initiatives} onChange={() => {}} />)
+  expect(screen.getByText('서버 이전')).toBeInTheDocument()
+  fireEvent.click(screen.getByText('인프라 전환'))
+  expect(screen.queryByText('서버 이전')).not.toBeInTheDocument()
 })
 
 it('마일스톤이 있으면 헤더에 마일스톤 N건 표시', () => {
@@ -65,11 +68,19 @@ it('마일스톤이 있으면 헤더에 마일스톤 N건 표시', () => {
   expect(screen.getByText(/마일스톤 1건/)).toBeInTheDocument()
 })
 
-it('과제 추가 시 milestones 빈 배열 포함', () => {
+it('쟁점이 있으면 헤더에 쟁점 건수(미해결)를 표시한다', () => {
+  render(<Initiatives initiatives={initiatives} onChange={() => {}} />)
+  expect(screen.getByText(/쟁점 1건\(미해결 1\)/)).toBeInTheDocument()
+})
+
+it('과제를 펼치면 쟁점 섹션이 보이고, 새 쟁점을 추가할 수 있다', () => {
   const onChange = vi.fn()
-  render(<Initiatives initiatives={[]} onChange={onChange} />)
-  fireEvent.click(screen.getByText('+ 과제 추가'))
-  fireEvent.change(screen.getByLabelText(/과제명/), { target: { value: '신규과제' } })
-  fireEvent.click(screen.getByRole('button', { name: '추가' }))
-  expect(onChange.mock.calls[0][0][0]).toMatchObject({ name: '신규과제', tasks: [], milestones: [] })
+  render(<Initiatives initiatives={initiatives} onChange={onChange} />)
+  expect(screen.getByText('벤더 리스크')).toBeInTheDocument()
+  fireEvent.click(screen.getByText('+ 쟁점 추가'))
+  fireEvent.change(screen.getByLabelText(/내용/), { target: { value: '신규 쟁점' } })
+  fireEvent.click(screen.getByRole('button', { name: '저장' }))
+  const updated = onChange.mock.calls[0][0][0]
+  expect(updated.issues).toHaveLength(2)
+  expect(updated.issues[1]).toMatchObject({ content: '신규 쟁점', status: '열림' })
 })

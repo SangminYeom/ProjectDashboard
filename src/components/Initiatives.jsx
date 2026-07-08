@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import Modal from './Modal.jsx'
 import Gantt from './Gantt.jsx'
-import { initiativeProgress } from '../lib/calc.js'
+import { initiativeProgress, initiativeOpenIssueCount } from '../lib/calc.js'
+import IssueLog from './IssueLog.jsx'
 
 const TASK_STATUS = ['예정', '진행중', '완료', '보류']
 
@@ -29,6 +30,8 @@ export default function Initiatives({ initiatives, onChange }) {
       {initiatives.map((init, idx) => {
         const taskCount = (init.items ?? []).filter(i => i.type === 'task').length
         const msCount = (init.items ?? []).filter(i => i.type === 'milestone').length
+        const issueCount = (init.issues ?? []).length
+        const openIssueCount = initiativeOpenIssueCount(init)
         return (
           <div key={init.id}
             className={`initiative-card${dragOver === idx ? ' drag-over' : ''}`}
@@ -50,6 +53,7 @@ export default function Initiatives({ initiatives, onChange }) {
               <span className="meta">
                 진척 {initiativeProgress(init)}% · 태스크 {taskCount}건
                 {msCount > 0 ? ` · 마일스톤 ${msCount}건` : ''}
+                {issueCount > 0 ? ` · 쟁점 ${issueCount}건${openIssueCount > 0 ? `(미해결 ${openIssueCount})` : ''}` : ''}
                 {init.owner ? ` · 담당 ${init.owner}` : ''}
               </span>
               <button className="icon-btn" aria-label={`${init.name} 수정`}
@@ -81,6 +85,10 @@ export default function Initiatives({ initiatives, onChange }) {
                   <button className="link-btn" onClick={() => setTaskFormFor(init.id)}>+ 태스크 추가</button>
                   <button className="link-btn" onClick={() => setMilestoneFormFor(init.id)}>+ 마일스톤 추가</button>
                 </div>
+                <IssueLog
+                  issues={init.issues ?? []}
+                  onChange={(issues) => updateInit(init.id, (i) => ({ ...i, issues }))}
+                />
               </div>
             )}
           </div>
@@ -91,7 +99,7 @@ export default function Initiatives({ initiatives, onChange }) {
       {addingInit && (
         <InitiativeForm
           onSubmit={(form) => {
-            onChange([...initiatives, { id: crypto.randomUUID(), ...form, items: [] }])
+            onChange([...initiatives, { id: crypto.randomUUID(), ...form, items: [], issues: [] }])
             setAddingInit(false)
           }}
           onClose={() => setAddingInit(false)}
