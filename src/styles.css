@@ -1,3 +1,37 @@
+/* ===== 디자인 토큰 ===== */
+:root {
+  /* 강조색 (Asana 코랄) */
+  --accent:        #D85A30;
+  --accent-hover:  #C24E28;
+  --accent-strong: #993C1D;
+  --accent-bg:     #FAECE7;
+
+  /* 표면 */
+  --surface-page: #f5f5f7;
+  --surface-card: #ffffff;
+  --surface-sunk: #f1f1f4;
+
+  /* 텍스트 */
+  --text-primary:   #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-muted:     #86868b;
+
+  /* 경계/그림자 */
+  --border:        #e8e8ed;
+  --border-strong: #d2d2d7;
+  --shadow-card:   0 1px 2px rgba(0,0,0,.04), 0 0 1px rgba(0,0,0,.06);
+
+  /* 상태 */
+  --ok:    #1a7f37;
+  --warn:  #b45309;
+  --danger:#cf1124;
+
+  /* 레이아웃 */
+  --sidebar-w: 240px;
+  --radius-card: 12px;
+  --radius-ctl: 8px;
+}
+
 /* ===== 기본 ===== */
 *, *::before, *::after { box-sizing: border-box; }
 body {
