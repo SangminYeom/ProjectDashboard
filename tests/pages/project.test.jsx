@@ -53,7 +53,7 @@ it('쟁점 탭으로 전환하면 집계된 쟁점이 보인다', () => {
 
 it('뒤로 가기 버튼이 onBack을 호출한다', () => {
   const { onBack } = setup()
-  fireEvent.click(screen.getByRole('button', { name: '← 홈' }))
+  fireEvent.click(screen.getByRole('button', { name: '홈' }))
   expect(onBack).toHaveBeenCalled()
 })
 

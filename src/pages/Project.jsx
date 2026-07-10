@@ -7,7 +7,7 @@ import ProjectIssues from '../components/ProjectIssues.jsx'
 import ProjectForm from '../components/ProjectForm.jsx'
 import { kpiRate, initiativeProgress, countOpenIssues } from '../lib/calc.js'
 import { projectColor } from '../lib/colors.js'
-import { EditIcon } from '../components/icons.jsx'
+import { EditIcon, ArrowLeftIcon } from '../components/icons.jsx'
 
 const TABS = ['개요', '과제', '운영', '쟁점']
 
@@ -36,7 +36,7 @@ export default function Project({ project, onChange, onDelete, onBack }) {
   return (
     <div className="project">
       <header className="page-head">
-        <button className="back-btn" onClick={onBack}>← 홈</button>
+        <button className="back-btn" onClick={onBack}><ArrowLeftIcon /> 홈</button>
         <div className="page-head-row">
           <div>
             <h1 className="proj-title">

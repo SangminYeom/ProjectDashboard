@@ -1,5 +1,6 @@
 import { projectColor } from '../lib/colors.js'
 import { projectSidebarStatus } from '../lib/projectStatus.js'
+import { GridIcon } from './icons.jsx'
 
 export default function Sidebar({ projects, view, onNavigate, onAddProject }) {
   return (
@@ -10,7 +11,7 @@ export default function Sidebar({ projects, view, onNavigate, onAddProject }) {
         className={`side-item side-home${view.page === 'home' ? ' active' : ''}`}
         onClick={() => onNavigate({ page: 'home' })}
       >
-        <span className="side-ico" aria-hidden="true">▦</span>
+        <span className="side-ico"><GridIcon /></span>
         <span className="side-project-name">전체 개요</span>
       </button>
 

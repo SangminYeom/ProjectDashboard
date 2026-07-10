@@ -30,7 +30,7 @@ it('사이드바 프로젝트 클릭 → 상세를 연다', async () => {
   const btns = await screen.findAllByRole('button', { name: /차세대 시스템/ })
   fireEvent.click(btns[0])
   expect(screen.getAllByText('차세대 시스템').length).toBeGreaterThan(0)
-  expect(screen.getByRole('button', { name: '← 홈' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: '홈' })).toBeInTheDocument()
 })
 
 it('데이터 변경 시 디바운스 저장이 호출된다', async () => {
