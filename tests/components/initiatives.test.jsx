@@ -73,14 +73,7 @@ it('쟁점이 있으면 헤더에 쟁점 건수(미해결)를 표시한다', () 
   expect(screen.getByText(/쟁점 1건\(미해결 1\)/)).toBeInTheDocument()
 })
 
-it('과제를 펼치면 쟁점 섹션이 보이고, 새 쟁점을 추가할 수 있다', () => {
-  const onChange = vi.fn()
-  render(<Initiatives initiatives={initiatives} onChange={onChange} />)
-  expect(screen.getByText('벤더 리스크')).toBeInTheDocument()
-  fireEvent.click(screen.getByText('+ 쟁점 추가'))
-  fireEvent.change(screen.getByLabelText(/내용/), { target: { value: '신규 쟁점' } })
-  fireEvent.click(screen.getByRole('button', { name: '저장' }))
-  const updated = onChange.mock.calls[0][0][0]
-  expect(updated.issues).toHaveLength(2)
-  expect(updated.issues[1]).toMatchObject({ content: '신규 쟁점', status: '열림' })
+it('과제 카드 안에는 쟁점 추가 버튼이 없다(쟁점은 전용 탭)', () => {
+  render(<Initiatives initiatives={initiatives} onChange={() => {}} />)
+  expect(screen.queryByRole('button', { name: /쟁점 추가/ })).not.toBeInTheDocument()
 })
