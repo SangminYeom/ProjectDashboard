@@ -308,8 +308,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .gantt-bar.done .gantt-bar-fill        { background: var(--ok); }
 .gantt-bar.active             { background: var(--accent-bg); }
 .gantt-bar.active .gantt-bar-fill      { background: var(--accent); }
-.gantt-bar.scheduled          { background: var(--surface-sunk); }
-.gantt-bar.scheduled .gantt-bar-fill   { background: var(--border-strong); }
+.gantt-bar.scheduled          { background: var(--border-strong); }
+.gantt-bar.scheduled .gantt-bar-fill   { background: var(--text-muted); }
 .gantt-bar.delayed            { background: rgba(207, 17, 36, .14); }
 .gantt-bar.delayed .gantt-bar-fill     { background: var(--danger); }
 .gantt-row.unscheduled .gantt-track { background: transparent; }
