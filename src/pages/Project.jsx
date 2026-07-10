@@ -7,6 +7,7 @@ import ProjectIssues from '../components/ProjectIssues.jsx'
 import ProjectForm from '../components/ProjectForm.jsx'
 import { kpiRate, initiativeProgress, countOpenIssues } from '../lib/calc.js'
 import { projectColor } from '../lib/colors.js'
+import { EditIcon } from '../components/icons.jsx'
 
 const TABS = ['개요', '과제', '운영', '쟁점']
 
@@ -46,7 +47,7 @@ export default function Project({ project, onChange, onDelete, onBack }) {
           </div>
           <div className="page-head-actions">
             <button className="btn-export" onClick={handleExport} aria-label="PNG 내보내기">↓ PNG</button>
-            <button className="icon-btn" onClick={() => setEditing(true)}>✏</button>
+            <button className="icon-btn" aria-label="프로젝트 수정" onClick={() => setEditing(true)}><EditIcon /></button>
             <button className="icon-btn danger"
               onClick={() => confirm(`'${project.name}' 프로젝트를 삭제할까요?`) && onDelete()}>삭제</button>
           </div>

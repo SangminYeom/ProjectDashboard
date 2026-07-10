@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Modal from './Modal.jsx'
 import { isTaskDelayed, todayStr } from '../lib/calc.js'
+import { EditIcon, TrashIcon } from './icons.jsx'
 
 const TASK_STATUS = ['예정', '진행중', '완료', '보류']
 const toMs = (d) => new Date(d + 'T00:00:00').getTime()
@@ -149,9 +150,9 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
                 </span>
                 <span className="milestone-badge">◆ 마일스톤</span>
                 <button className="icon-btn" aria-label={`${item.name} 수정`}
-                  onClick={() => setEditingItem(item)}>✏</button>
+                  onClick={() => setEditingItem(item)}><EditIcon /></button>
                 <button className="icon-btn" aria-label={`${item.name} 삭제`}
-                  onClick={() => confirm(`마일스톤 '${item.name}'을(를) 삭제할까요?`) && onRemove(item.id)}>🗑️</button>
+                  onClick={() => confirm(`마일스톤 '${item.name}'을(를) 삭제할까요?`) && onRemove(item.id)}><TrashIcon /></button>
               </div>
             )
           }
@@ -190,9 +191,9 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
               </span>
               <span className={`task-status ${delayed ? 'delayed' : ''}`}>{delayed ? '⚠ 지연' : hasDate(item) ? item.status : '일정미정'}</span>
               <button className="icon-btn" aria-label={`${item.name} 수정`}
-                onClick={() => setEditingItem(item)}>✏</button>
+                onClick={() => setEditingItem(item)}><EditIcon /></button>
               <button className="icon-btn" aria-label={`${item.name} 삭제`}
-                onClick={() => confirm(`태스크 '${item.name}'을(를) 삭제할까요?`) && onRemove(item.id)}>🗑️</button>
+                onClick={() => confirm(`태스크 '${item.name}'을(를) 삭제할까요?`) && onRemove(item.id)}><TrashIcon /></button>
             </div>
           )
         })}

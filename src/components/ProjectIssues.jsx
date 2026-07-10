@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Modal from './Modal.jsx'
 import { todayStr } from '../lib/calc.js'
+import { EditIcon, TrashIcon } from './icons.jsx'
 
 const IMPORTANCES = ['상', '중', '하']
 const STATUSES = ['열림', '대응중', '해결']
@@ -102,8 +103,8 @@ function IssueRow({ issue, initName, onStatus, onEdit, onRemove }) {
           {STATUSES.map((s) => <option key={s}>{s}</option>)}
         </select>
         <span className="issue-actions">
-          <button className="icon-btn" onClick={onEdit} aria-label={`${issue.content} 편집`}>✏</button>
-          <button className="icon-btn" onClick={onRemove} aria-label={`${issue.content} 삭제`}>🗑️</button>
+          <button className="icon-btn" onClick={onEdit} aria-label={`${issue.content} 편집`}><EditIcon /></button>
+          <button className="icon-btn" onClick={onRemove} aria-label={`${issue.content} 삭제`}><TrashIcon /></button>
         </span>
       </div>
       {issue.response && (

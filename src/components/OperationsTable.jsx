@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Modal from './Modal.jsx'
+import { TrashIcon } from './icons.jsx'
 
 const CYCLES = ['일', '주', '월', '분기']
 const OP_STATUS = ['정상', '주의', '이슈']
@@ -51,7 +52,7 @@ export default function OperationsTable({ operations, onChange }) {
               </td>
               <td>
                 <button className="icon-btn" aria-label={`${o.name} 삭제`}
-                  onClick={() => confirm(`업무 '${o.name}'을(를) 삭제할까요?`) && onChange(operations.filter((x) => x.id !== o.id))}>🗑️</button>
+                  onClick={() => confirm(`업무 '${o.name}'을(를) 삭제할까요?`) && onChange(operations.filter((x) => x.id !== o.id))}><TrashIcon /></button>
               </td>
             </tr>
           ))}

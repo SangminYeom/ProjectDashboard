@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import Modal from './Modal.jsx'
 import { kpiRate } from '../lib/calc.js'
+import { EditIcon, TrashIcon } from './icons.jsx'
 
 const QUAL_STATUS = ['달성', '순항', '주의', '미달']
 const QUAL_COLOR = { 달성: 'ok', 순항: 'accent', 주의: 'warn', 미달: 'danger' }
@@ -41,9 +42,9 @@ export default function KpiBar({ kpis, onChange }) {
               <div className="kpi-actions">
                 <span className="drag-handle" aria-hidden="true">⠿</span>
                 <button className="icon-btn" aria-label={`${k.name} 수정`}
-                  onClick={() => setEditingKpi(k)}>✏</button>
+                  onClick={() => setEditingKpi(k)}><EditIcon /></button>
                 <button className="icon-btn" aria-label={`${k.name} 삭제`}
-                  onClick={() => confirm(`KPI '${k.name}'을(를) 삭제할까요?`) && onChange(kpis.filter((x) => x.id !== k.id))}>🗑️</button>
+                  onClick={() => confirm(`KPI '${k.name}'을(를) 삭제할까요?`) && onChange(kpis.filter((x) => x.id !== k.id))}><TrashIcon /></button>
               </div>
             </div>
             {k.type === 'numeric' ? (
