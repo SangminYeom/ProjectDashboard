@@ -502,3 +502,12 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
   .sidebar { position: static; width: auto; border-right: none; border-bottom: 1px solid var(--border); }
   .shell-main { margin-left: 0; padding: 20px 16px 60px; }
 }
+
+/* ===== 개요 탭 ===== */
+.overview-cols { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 8px; }
+@media (min-width: 800px) { .overview-cols { grid-template-columns: 1fr 1fr; gap: 28px; } }
+.overview-block { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 18px 20px; }
+.ov-issue-row { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; font-size: 13px; }
+.ov-issue-row:last-child { margin-bottom: 0; }
+.ov-issue-content { flex: 1; min-width: 0; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ov-issue-init { font-size: 11px; color: var(--text-muted); flex-shrink: 0; background: var(--surface-sunk); border-radius: 20px; padding: 2px 9px; }
