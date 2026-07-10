@@ -260,7 +260,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 /* 간트 */
 .gantt { display: flex; flex-direction: column; gap: 6px; }
 .gantt-row { display: flex; align-items: center; gap: 10px; font-size: 13px; border-radius: 6px; padding: 2px 0; }
-.gantt-row.drag-over { background: #f0f5ff; }
+.gantt-row.drag-over { background: var(--accent-bg); }
 .drag-handle-col { width: 20px; flex-shrink: 0; }
 .task-name { width: 180px; flex-shrink: 0; }
 .task-name-text { font-size: 13px; color: #1d1d1f; word-break: keep-all; line-height: 1.4; }
