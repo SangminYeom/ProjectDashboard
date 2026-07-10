@@ -1,5 +1,7 @@
 import { kpiRate, initiativeProgress } from '../lib/calc.js'
 import { projectColor } from '../lib/colors.js'
+import { projectProgress } from '../lib/projectStatus.js'
+import ProgressRing from '../components/ProgressRing.jsx'
 
 export default function Home({ projects, onOpen }) {
   return (
@@ -16,16 +18,19 @@ export default function Home({ projects, onOpen }) {
           return (
             <button key={p.id} className="project-card" onClick={() => onOpen(p.id)}>
               <div className="card-head">
-                <div className="card-name">
-                  <span className="card-dot" style={{ background: projectColor(p.id) }} aria-hidden="true" />
-                  {p.name}
+                <div>
+                  <div className="card-name">
+                    <span className="card-dot" style={{ background: projectColor(p.id) }} aria-hidden="true" />
+                    {p.name}
+                  </div>
+                  <div className="card-period">{p.startDate.slice(0, 7)} – {p.endDate.slice(0, 7)}</div>
                 </div>
-                <div className="card-period">{p.startDate.slice(0, 7)} – {p.endDate.slice(0, 7)}</div>
+                <ProgressRing pct={projectProgress(p)} size={36} stroke={3.5} />
               </div>
 
               {p.kpis.length > 0 && (
                 <div className="card-chip">
-                  <div className="sec">KPI</div>
+                  <div className="sec"><span className="sec-icon" aria-hidden="true">◎</span>KPI</div>
                   <div className="kpi-list">
                     {p.kpis.map((k) => (
                       <div key={k.id} className="kpi-row">
@@ -46,7 +51,7 @@ export default function Home({ projects, onOpen }) {
 
               {p.initiatives.length > 0 && (
                 <div className="card-chip">
-                  <div className="sec">중점수행과제</div>
+                  <div className="sec"><span className="sec-icon" aria-hidden="true">⚑</span>중점수행과제</div>
                   <div className="ini-list">
                     {p.initiatives.map((i) => {
                       const prog = initiativeProgress(i)
@@ -64,7 +69,7 @@ export default function Home({ projects, onOpen }) {
 
               {p.operations.length > 0 && (
                 <div className="card-chip">
-                  <div className="sec">운영업무</div>
+                  <div className="sec"><span className="sec-icon" aria-hidden="true">⚙</span>운영업무</div>
                   <div className="op-list">
                     {p.operations.map((o) => {
                       const cls = o.status === '정상' ? 'dot-green' : o.status === '주의' ? 'dot-amber' : 'dot-red'
@@ -82,7 +87,7 @@ export default function Home({ projects, onOpen }) {
 
               {openIssues.length > 0 && (
                 <div className="card-chip">
-                  <div className="sec">쟁점</div>
+                  <div className="sec"><span className="sec-icon" aria-hidden="true">⚠</span>쟁점</div>
                   <div className="op-list">
                     {openIssues.map((iss) => (
                       <div key={iss.id} className="op-row">

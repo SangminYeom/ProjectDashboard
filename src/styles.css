@@ -117,25 +117,31 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .add-card:hover { border-color: #86868b; transform: none; box-shadow: none; }
 
 /* 카드 내부 */
-.card-head { margin-bottom: 24px; }
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 24px; }
 .card-name { font-size: 19px; font-weight: 700; color: #1d1d1f; letter-spacing: -.5px; }
 .card-name { display: flex; align-items: center; gap: 8px; }
 .card-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
 .card-period { font-size: 12px; color: #86868b; margin-top: 4px; }
 
+/* 원형 진행률 (아사나식) */
+.progress-ring { flex-shrink: 0; }
+.progress-ring-text { font-size: 9px; font-weight: 700; fill: var(--text-primary); }
+
 /* 섹션 레이블 (홈 카드 + 상세 공통) */
 .sec {
-  font-size: 9.5px; font-weight: 600; letter-spacing: 1.6px;
-  text-transform: uppercase; color: #86868b; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 1.6px;
+  text-transform: uppercase; color: var(--accent-strong); margin-bottom: 10px;
 }
+.sec-icon { font-size: 11px; letter-spacing: 0; }
 
 /* 중점수행과제 리스트 */
 .ini-list { margin-bottom: 24px; }
 .ini-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .ini-row:last-child { margin-bottom: 0; }
 .ini-name { font-size: 13px; color: #1d1d1f; flex-shrink: 0; }
-.ini-track { flex: 1; height: 3px; background: #e8e8ed; border-radius: 2px; overflow: hidden; min-width: 40px; }
-.ini-fill  { height: 100%; border-radius: 2px; background: #1d1d1f; }
+.ini-track { flex: 1; height: 5px; background: #e8e8ed; border-radius: 3px; overflow: hidden; min-width: 40px; }
+.ini-fill  { height: 100%; border-radius: 3px; background: var(--accent); }
 .ini-pct   { font-size: 11px; color: #86868b; flex-shrink: 0; width: 26px; text-align: right; }
 
 /* KPI 리스트 (홈 카드) */
@@ -152,11 +158,10 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .card-chip { background: none; padding: 18px 0 6px; margin-bottom: 0; border-top: 1px solid #f0f0f2; }
 .card-chip:first-of-type { border-top: none; padding-top: 4px; }
 .card-chip .sec {
-  display: inline-block;
-  font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none;
-  color: #3a3a3c; background: #e8e8ed;
-  border-radius: 20px; padding: 3px 10px;
-  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; letter-spacing: .2px; text-transform: none;
+  color: var(--accent-strong); background: none;
+  padding: 0; margin-bottom: 10px;
 }
 .card-chip .ini-list { margin-bottom: 0; }
 .card-chip .kpi-list { margin-bottom: 0; }
@@ -183,6 +188,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .kpi-card {
   background: #fff; border-radius: var(--radius-card); padding: 18px 20px;
   border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
   box-shadow: var(--shadow-card);
 }
 .kpi-card.drag-over { outline: 2px solid var(--accent); outline-offset: -2px; }

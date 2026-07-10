@@ -55,3 +55,8 @@ it('과제의 미해결 쟁점을 카드에 표시한다 (여러 과제 합산, 
   expect(screen.getByText('취약점 점검 지연')).toBeInTheDocument()
   expect(screen.queryByText('계약 지연')).not.toBeInTheDocument()
 })
+
+it('카드 헤더에 프로젝트 전체 진행률 원형 표시가 있다', () => {
+  setup()
+  expect(screen.getByRole('img', { name: '진행률 0%' })).toBeInTheDocument()
+})

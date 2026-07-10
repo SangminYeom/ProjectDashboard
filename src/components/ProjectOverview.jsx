@@ -14,7 +14,7 @@ export default function ProjectOverview({ project, onChange }) {
 
       <div className="overview-cols">
         <section className="overview-block">
-          <div className="sec">과제 진척</div>
+          <div className="sec"><span className="sec-icon" aria-hidden="true">⚑</span>과제 진척</div>
           {project.initiatives.length === 0 && <p className="empty">등록된 과제가 없습니다.</p>}
           {project.initiatives.map((i) => {
             const prog = initiativeProgress(i)
@@ -29,7 +29,7 @@ export default function ProjectOverview({ project, onChange }) {
         </section>
 
         <section className="overview-block">
-          <div className="sec">주요 쟁점</div>
+          <div className="sec"><span className="sec-icon" aria-hidden="true">⚠</span>주요 쟁점</div>
           {openIssues.length === 0 && <p className="empty">미해결 쟁점이 없습니다.</p>}
           {openIssues.map((iss) => (
             <div key={iss.id} className="ov-issue-row">

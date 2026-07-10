@@ -101,7 +101,7 @@ const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
 
       {project.kpis.length > 0 && (
         <div className="card-chip">
-          <div className="sec">KPI</div>
+          <div className="sec"><span className="sec-icon" aria-hidden="true">◎</span>KPI</div>
           <div className="kpi-list">
             {project.kpis.map((k) => (
               <div key={k.id} className="kpi-row">
@@ -122,7 +122,7 @@ const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
 
       {project.initiatives.length > 0 && (
         <div className="card-chip">
-          <div className="sec">중점수행과제</div>
+          <div className="sec"><span className="sec-icon" aria-hidden="true">⚑</span>중점수행과제</div>
           <div className="ini-list">
             {project.initiatives.map((i) => {
               const prog = initiativeProgress(i)
@@ -151,7 +151,7 @@ const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
 
       {project.operations.length > 0 && (
         <div className="card-chip">
-          <div className="sec">운영업무</div>
+          <div className="sec"><span className="sec-icon" aria-hidden="true">⚙</span>운영업무</div>
           <div className="op-list">
             {project.operations.map((o) => {
               const cls = o.status === '정상' ? 'dot-green' : o.status === '주의' ? 'dot-amber' : 'dot-red'
@@ -169,7 +169,7 @@ const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
 
       {openIssues.length > 0 && (
         <div className="card-chip">
-          <div className="sec">쟁점</div>
+          <div className="sec"><span className="sec-icon" aria-hidden="true">⚠</span>쟁점</div>
           <div className="op-list">
             {openIssues.map((iss) => (
               <div key={iss.id} className="op-row">
