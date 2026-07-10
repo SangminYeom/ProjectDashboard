@@ -81,3 +81,21 @@ it('마일스톤 date가 Gantt min/max 범위에 포함된다', () => {
   expect(parseFloat(bars[0].style.left)).toBeGreaterThanOrEqual(0)
   expect(container.querySelector('.milestone-diamond')).toBeInTheDocument()
 })
+
+it('막대 안에 진척률만큼 채워지는 fill이 렌더링된다 (지라식 진척 표시)', () => {
+  const { container } = render(
+    <Gantt items={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
+  )
+  const fills = container.querySelectorAll('.gantt-bar-fill')
+  expect(fills).toHaveLength(2)
+  expect(fills[0].style.width).toBe('100%') // t1: progress 100
+  expect(fills[1].style.width).toBe('20%')  // t2: progress 20
+})
+
+it('타임라인 배경에 격자선이 렌더링된다 (헤더·태스크 트랙 공통)', () => {
+  const { container } = render(
+    <Gantt items={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
+  )
+  // 트랙 3개(헤더 1 + 태스크 2) × 격자선 5개
+  expect(container.querySelectorAll('.gantt-gridline')).toHaveLength(15)
+})

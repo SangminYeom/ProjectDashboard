@@ -269,12 +269,18 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .task-date { width: 110px; flex-shrink: 0; font-size: 11px; color: #86868b; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .task-date--header { font-size: 11px; color: #aeaeb2; }
 .gantt-row.unscheduled .task-date { color: #c7c7cc; }
-.gantt-track { position: relative; flex: 1; height: 4px; background: #e8e8ed; border-radius: 2px; overflow: visible; }
-.gantt-bar { position: absolute; top: 0; height: 4px; border-radius: 2px; }
-.gantt-bar.done        { background: #30d158; }
-.gantt-bar.active      { background: var(--accent); }
-.gantt-bar.scheduled   { background: #c7c7cc; }
-.gantt-bar.delayed     { background: #ff3b30; }
+.gantt-track { position: relative; flex: 1; height: 14px; background: #e8e8ed; border-radius: 4px; overflow: visible; }
+.gantt-gridline { position: absolute; top: 50%; height: 32px; width: 1px; background: var(--border-strong); transform: translateY(-50%); pointer-events: none; }
+.gantt-bar { position: absolute; top: 0; height: 14px; border-radius: 4px; overflow: hidden; }
+.gantt-bar-fill { display: block; height: 100%; }
+.gantt-bar.done               { background: rgba(48, 209, 88, .22); }
+.gantt-bar.done .gantt-bar-fill        { background: #30d158; }
+.gantt-bar.active             { background: var(--accent-bg); }
+.gantt-bar.active .gantt-bar-fill      { background: var(--accent); }
+.gantt-bar.scheduled          { background: #ececee; }
+.gantt-bar.scheduled .gantt-bar-fill   { background: #c7c7cc; }
+.gantt-bar.delayed            { background: rgba(255, 59, 48, .18); }
+.gantt-bar.delayed .gantt-bar-fill     { background: #ff3b30; }
 .gantt-row.unscheduled .gantt-track { background: transparent; }
 .gantt-bar.unscheduled {
   left: 0; width: 100%;

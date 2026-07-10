@@ -52,6 +52,14 @@ function buildTicks(minMs, maxMs) {
 
 const hasDate = (t) => t.startDate && t.endDate
 
+const GRID_TICKS = [0, 25, 50, 75, 100]
+
+function GridLines() {
+  return GRID_TICKS.map((pct, i) => (
+    <span key={i} className="gantt-gridline" style={{ left: `${pct}%` }} aria-hidden="true" />
+  ))
+}
+
 export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today = todayStr() }) {
   const [editingItem, setEditingItem] = useState(null)
   const [dragOver, setDragOver] = useState(null)
@@ -99,6 +107,7 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
           <span className="task-progress" />
           <span className="task-date task-date--header">기간</span>
           <span className="gantt-track gantt-track--header">
+            <GridLines />
             {ticks.map(({ label }, i) => (
               <span
                 key={i}
@@ -130,6 +139,7 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
                 <span className="task-progress">—</span>
                 <span className="task-date">{item.date ? fmtDate(item.date) : '—'}</span>
                 <span className="gantt-track gantt-track--milestone">
+                  <GridLines />
                   {item.date && (
                     <span
                       className="milestone-diamond"
@@ -166,12 +176,15 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
                 {hasDate(item) ? `${fmtDate(item.startDate)}~${fmtDate(item.endDate)}` : '—'}
               </span>
               <span className="gantt-track">
+                <GridLines />
                 {hasDate(item) ? (
                   <span
                     className={`gantt-bar ${item.progress === 100 ? 'done' : delayed ? 'delayed' : item.progress > 0 ? 'active' : 'scheduled'}`}
                     style={{ left: `${leftPct(item.startDate)}%`, width: `${widthPct(item)}%` }}
-                    title={`${item.startDate} ~ ${item.endDate}`}
-                  />
+                    title={`${item.startDate} ~ ${item.endDate} · 진척 ${item.progress}%`}
+                  >
+                    <span className="gantt-bar-fill" style={{ width: `${item.progress}%` }} />
+                  </span>
                 ) : (
                   <span className="gantt-bar unscheduled" title="일정미정" />
                 )}
