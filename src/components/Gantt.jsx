@@ -60,6 +60,10 @@ function GridLines() {
   ))
 }
 
+function TodayLine({ pct }) {
+  return <span className="today-marker" style={{ left: `${pct}%` }} aria-hidden="true" />
+}
+
 export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today = todayStr() }) {
   const [editingItem, setEditingItem] = useState(null)
   const [dragOver, setDragOver] = useState(null)
@@ -116,9 +120,8 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
                 {label}
               </span>
             ))}
-            <span className="today-marker" style={{ left: `${leftPct(today)}%` }}>
-              <span className="today-marker-pill">오늘</span>
-            </span>
+            <TodayLine pct={leftPct(today)} />
+            <span className="today-marker-pill" style={{ left: `${leftPct(today)}%` }}>오늘</span>
           </span>
           <span className="task-status" />
           <span className="gantt-btn-spacer" />
@@ -140,6 +143,7 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
                 <span className="task-date">{item.date ? fmtDate(item.date) : '—'}</span>
                 <span className="gantt-track gantt-track--milestone">
                   <GridLines />
+                  <TodayLine pct={leftPct(today)} />
                   {item.date && (
                     <span
                       className="milestone-diamond"
@@ -177,6 +181,7 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
               </span>
               <span className="gantt-track">
                 <GridLines />
+                <TodayLine pct={leftPct(today)} />
                 {hasDate(item) ? (
                   <span
                     className={`gantt-bar ${item.progress === 100 ? 'done' : delayed ? 'delayed' : item.progress > 0 ? 'active' : 'scheduled'}`}

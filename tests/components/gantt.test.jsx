@@ -45,6 +45,16 @@ it('모든 태스크가 미래여도 오늘선이 0% 이상에 위치한다', ()
   expect(parseFloat(todayMarker.style.left)).toBeGreaterThanOrEqual(0)
 })
 
+it('오늘선이 헤더뿐 아니라 모든 태스크 행에 걸쳐 연속으로 그려진다 (지라식)', () => {
+  const { container } = render(
+    <Gantt items={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
+  )
+  // 트랙 3개(헤더 1 + 태스크 2) 각각에 오늘선 세그먼트가 하나씩
+  expect(container.querySelectorAll('.today-marker')).toHaveLength(3)
+  // '오늘' 라벨(pill)은 헤더에만 한 번
+  expect(container.querySelectorAll('.today-marker-pill')).toHaveLength(1)
+})
+
 it('마일스톤 행이 렌더링된다', () => {
   render(
     <Gantt
