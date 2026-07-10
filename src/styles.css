@@ -360,7 +360,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 }
 .gantt-axis-first { transform: translateY(-50%); }
 .gantt-axis-last  { transform: translate(-100%, -50%); }
-.gantt-btn-spacer { width: 60px; flex-shrink: 0; }
+.gantt-btn-spacer { width: 66px; flex-shrink: 0; }
 
 /* 마일스톤 */
 .gantt-row.milestone-row { background: #fffbeb; border-radius: 6px; }
@@ -377,7 +377,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .milestone-badge {
   font-size: 11px; font-weight: 600;
   color: #b45309;
-  white-space: nowrap; flex-shrink: 0;
+  white-space: nowrap; flex-shrink: 0; width: 56px;
 }
 .milestone-icon { color: #f59e0b; margin-right: 4px; font-size: 11px; }
 .milestone-name { font-weight: 600; color: #92400e; }
