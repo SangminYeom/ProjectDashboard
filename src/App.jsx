@@ -4,10 +4,13 @@ import { AuthError } from './auth-error.js'
 import Home from './pages/Home.jsx'
 import Project from './pages/Project.jsx'
 import Login from './pages/Login.jsx'
+import Sidebar from './components/Sidebar.jsx'
+import ProjectForm from './components/ProjectForm.jsx'
 
 export default function App() {
   const [projects, setProjects] = useState(null)
   const [view, setView] = useState({ page: 'home' })
+  const [adding, setAdding] = useState(false)
   const [notice, setNotice] = useState(null)
   const [authed, setAuthed] = useState(null) // null=확인중, false=미인증, true=인증됨
   const saveRef = useRef(null)
@@ -76,21 +79,41 @@ export default function App() {
   const current = view.page === 'project' ? projects.find((p) => p.id === view.id) : null
 
   return (
-    <div className="app">
-      {notice && <div className={`banner banner-${notice.type}`}>{notice.text}</div>}
-      {current ? (
-        <Project
-          key={current.id}
-          project={current}
-          onChange={(updater) => updateProject(current.id, updater)}
-          onDelete={() => {
-            updateProjects(projects.filter((p) => p.id !== current.id))
-            setView({ page: 'home' })
+    <div className="shell">
+      <Sidebar
+        projects={projects}
+        view={view}
+        onNavigate={setView}
+        onAddProject={() => setAdding(true)}
+      />
+      <main className="shell-main">
+        {notice && <div className={`banner banner-${notice.type}`}>{notice.text}</div>}
+        {current ? (
+          <Project
+            key={current.id}
+            project={current}
+            onChange={(updater) => updateProject(current.id, updater)}
+            onDelete={() => {
+              updateProjects(projects.filter((p) => p.id !== current.id))
+              setView({ page: 'home' })
+            }}
+            onBack={() => setView({ page: 'home' })}
+          />
+        ) : (
+          <Home projects={projects} onOpen={(id) => setView({ page: 'project', id })} />
+        )}
+      </main>
+
+      {adding && (
+        <ProjectForm
+          onSubmit={(form) => {
+            const id = crypto.randomUUID()
+            updateProjects([...projects, { id, ...form, kpis: [], initiatives: [], operations: [] }])
+            setAdding(false)
+            setView({ page: 'project', id })
           }}
-          onBack={() => setView({ page: 'home' })}
+          onClose={() => setAdding(false)}
         />
-      ) : (
-        <Home projects={projects} onOpen={(id) => setView({ page: 'project', id })} onChange={updateProjects} />
       )}
     </div>
   )

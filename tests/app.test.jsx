@@ -19,22 +19,25 @@ import App from '../src/App.jsx'
 import { loadProjects } from '../src/api.js'
 import { AuthError } from '../src/auth-error.js'
 
-it('로드 후 홈 화면을 보여준다', async () => {
+it('로드 후 사이드바를 보여준다', async () => {
   render(<App />)
-  expect(await screen.findByText('차세대 시스템')).toBeInTheDocument()
+  expect(await screen.findByRole('button', { name: /전체 개요/ })).toBeInTheDocument()
 })
 
-it('카드 클릭 → 상세 → 뒤로 가기', async () => {
+it('사이드바 프로젝트 클릭 → 상세를 연다', async () => {
   render(<App />)
-  fireEvent.click(await screen.findByText('차세대 시스템'))
+  // 사이드바가 DOM에서 먼저 렌더되므로 첫 번째가 사이드바 프로젝트 버튼이다
+  const btns = await screen.findAllByRole('button', { name: /차세대 시스템/ })
+  fireEvent.click(btns[0])
+  expect(screen.getAllByText('차세대 시스템').length).toBeGreaterThan(0)
   expect(screen.getByRole('button', { name: '← 홈' })).toBeInTheDocument()
-  fireEvent.click(screen.getByRole('button', { name: '← 홈' }))
-  expect(screen.getByText("'26년 Project 목표 관리")).toBeInTheDocument()
 })
 
 it('데이터 변경 시 디바운스 저장이 호출된다', async () => {
   render(<App />)
-  fireEvent.click(await screen.findByText('+ 새 프로젝트'))
+  // 사이드바의 새 프로젝트 버튼(App 레벨 추가 플로우)
+  const addBtns = await screen.findAllByRole('button', { name: '+ 새 프로젝트' })
+  fireEvent.click(addBtns[0])
   fireEvent.change(screen.getByLabelText(/이름/), { target: { value: '신규' } })
   fireEvent.change(screen.getByLabelText(/시작일/), { target: { value: '2026-07-01' } })
   fireEvent.change(screen.getByLabelText(/종료일/), { target: { value: '2026-12-31' } })

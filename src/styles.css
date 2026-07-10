@@ -488,3 +488,15 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 .side-badge--warning { color: var(--warn); }
 .side-badge--muted   { color: var(--text-muted); }
 .side-add { color: var(--text-muted); margin-top: 6px; }
+
+/* ===== 앱 셸 ===== */
+.shell { min-height: 100vh; background: var(--surface-page); }
+.shell-main {
+  margin-left: var(--sidebar-w);
+  padding: 28px 36px 80px;
+  max-width: 1180px;
+}
+@media (max-width: 640px) {
+  .sidebar { position: static; width: auto; border-right: none; border-bottom: 1px solid var(--border); }
+  .shell-main { margin-left: 0; padding: 20px 16px 60px; }
+}
