@@ -19,6 +19,11 @@ it('상태 인라인 변경 시 onChange 호출', () => {
   expect(onChange).toHaveBeenCalledWith([{ ...operations[0], status: '이슈' }])
 })
 
+it('상태값에 따라 컬러 배지 클래스가 붙는다 (아사나식 상태 표시)', () => {
+  render(<OperationsTable operations={operations} onChange={() => {}} />)
+  expect(screen.getByLabelText('주간 보고 상태')).toHaveClass('op-status-select--ok')
+})
+
 it('추가 폼으로 새 운영업무를 추가한다', () => {
   const onChange = vi.fn()
   render(<OperationsTable operations={[]} onChange={onChange} />)

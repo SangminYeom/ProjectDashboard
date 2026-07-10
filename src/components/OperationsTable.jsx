@@ -3,7 +3,7 @@ import Modal from './Modal.jsx'
 
 const CYCLES = ['일', '주', '월', '분기']
 const OP_STATUS = ['정상', '주의', '이슈']
-const OP_DOT = { 정상: 'dot-green', 주의: 'dot-amber', 이슈: 'dot-red' }
+const OP_COLOR = { 정상: 'ok', 주의: 'warn', 이슈: 'danger' }
 
 export default function OperationsTable({ operations, onChange }) {
   const [adding, setAdding] = useState(false)
@@ -37,10 +37,11 @@ export default function OperationsTable({ operations, onChange }) {
               </td>
               <td>
                 <div className="op-status-cell">
-                  <span className={`dot ${OP_DOT[o.status] ?? 'dot-amber'}`} />
-                  <select value={o.status} aria-label={`${o.name} 상태`}
+                  <select
+                    className={`op-status-select op-status-select--${OP_COLOR[o.status] ?? 'warn'}`}
+                    value={o.status} aria-label={`${o.name} 상태`}
                     onChange={(e) => update(o.id, { status: e.target.value })}>
-                    {['정상', '주의', '이슈'].map((s) => <option key={s} value={s}>{s}</option>)}
+                    {OP_STATUS.map((s) => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
               </td>

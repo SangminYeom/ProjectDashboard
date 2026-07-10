@@ -66,18 +66,22 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 }
 .btn-primary:hover { background: var(--accent-hover); }
 .icon-btn {
-  background: none; border: none; color: #86868b;
-  font-size: 13px; padding: 4px 6px; border-radius: 6px;
+  background: none; border: none; color: var(--text-muted);
+  font-size: 13px; padding: 6px 8px; min-width: 28px; min-height: 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-ctl);
   transition: background .15s, color .15s;
 }
-.icon-btn:hover { background: #f0f0f2; color: #1d1d1f; }
+.icon-btn:hover { background: var(--surface-sunk); color: var(--text-primary); }
 .icon-btn.danger { color: #ff3b30; }
 .icon-btn.danger:hover { background: #fff1f0; }
 .link-btn {
   background: none; border: none; color: var(--accent);
-  font-size: 13px; padding: 4px 6px; font-weight: 500;
+  font-size: 13px; padding: 5px 9px; font-weight: 500;
+  border-radius: var(--radius-ctl);
+  transition: background .15s;
 }
-.link-btn:hover { text-decoration: underline; }
+.link-btn:hover { background: var(--accent-bg); }
 
 /* ===== 홈 ===== */
 .home-header { margin-bottom: 48px; }
@@ -240,7 +244,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
   background: none; border: 1px solid var(--accent); border-radius: 6px;
   padding: 4px 11px; cursor: pointer; line-height: 1.4;
 }
-.btn-export:hover { background: #f0f6ff; }
+.btn-export:hover { background: var(--accent-bg); }
 .proj-title { font-size: 26px; font-weight: 700; letter-spacing: -.5px; color: #1d1d1f; margin: 0 0 4px; }
 .proj-title { display: flex; align-items: center; gap: 9px; }
 .proj-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
@@ -392,6 +396,13 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .op-table input:focus, .op-table select:focus { border-color: #d2d2d7; background: #fff; }
 .op-status-cell { display: flex; align-items: center; gap: 7px; }
 .op-status-cell select { width: auto; }
+.op-status-select {
+  font-size: 12px; font-weight: 600; border: none;
+  border-radius: 20px; padding: 3px 9px;
+}
+.op-status-select--ok     { background: #eaf3de; color: var(--ok); }
+.op-status-select--warn   { background: #faeeda; color: var(--warn); }
+.op-status-select--danger { background: #fcebeb; color: var(--danger); }
 
 /* ===== 쟁점 ===== */
 .issue-card {
@@ -409,12 +420,13 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .issue-content { margin: 0; flex: 1; min-width: 0; font-size: 13px; color: #1d1d1f; line-height: 1.5; }
 
 .status-select {
-  border: none; background: none; outline: none;
-  font-size: 12px; font-weight: 600; padding: 2px 4px; flex-shrink: 0; cursor: pointer;
+  border: none; outline: none; cursor: pointer;
+  font-size: 12px; font-weight: 600; flex-shrink: 0;
+  padding: 3px 9px; border-radius: 20px;
 }
-.status-select.status-open     { color: var(--accent); }
-.status-select.status-progress { color: #c05621; }
-.status-select.status-resolved { color: #1a7f37; }
+.status-select.status-open     { background: var(--accent-bg); color: var(--accent-strong); }
+.status-select.status-progress { background: #faeeda; color: var(--warn); }
+.status-select.status-resolved { background: #eaf3de; color: var(--ok); }
 
 .issue-actions { display: flex; gap: 2px; flex-shrink: 0; opacity: 0; transition: opacity .12s; }
 .issue-card:hover .issue-actions,
