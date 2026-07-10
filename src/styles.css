@@ -118,6 +118,8 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 /* 카드 내부 */
 .card-head { margin-bottom: 24px; }
 .card-name { font-size: 19px; font-weight: 700; color: #1d1d1f; letter-spacing: -.5px; }
+.card-name { display: flex; align-items: center; gap: 8px; }
+.card-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
 .card-period { font-size: 12px; color: #86868b; margin-top: 4px; }
 
 /* 섹션 레이블 (홈 카드 + 상세 공통) */

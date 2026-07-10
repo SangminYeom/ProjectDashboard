@@ -1,10 +1,7 @@
-import { useState } from 'react'
-import Modal from '../components/Modal.jsx'
 import { kpiRate, initiativeProgress } from '../lib/calc.js'
+import { projectColor } from '../lib/colors.js'
 
-export default function Home({ projects, onOpen, onChange }) {
-  const [adding, setAdding] = useState(false)
-
+export default function Home({ projects, onOpen }) {
   return (
     <div className="home">
       <header className="home-header">
@@ -19,10 +16,11 @@ export default function Home({ projects, onOpen, onChange }) {
           return (
             <button key={p.id} className="project-card" onClick={() => onOpen(p.id)}>
               <div className="card-head">
-                <div className="card-name">{p.name}</div>
-                <div className="card-period">
-                  {p.startDate.slice(0, 7)} – {p.endDate.slice(0, 7)}
+                <div className="card-name">
+                  <span className="card-dot" style={{ background: projectColor(p.id) }} aria-hidden="true" />
+                  {p.name}
                 </div>
+                <div className="card-period">{p.startDate.slice(0, 7)} – {p.endDate.slice(0, 7)}</div>
               </div>
 
               {p.kpis.length > 0 && (
@@ -98,43 +96,7 @@ export default function Home({ projects, onOpen, onChange }) {
             </button>
           )
         })}
-        <button className="project-card add-card" onClick={() => setAdding(true)}>+ 새 프로젝트</button>
       </div>
-
-      {adding && (
-        <ProjectForm
-          onSubmit={(form) => {
-            onChange([...projects, {
-              id: crypto.randomUUID(), ...form,
-              kpis: [], initiatives: [], operations: [],
-            }])
-            setAdding(false)
-          }}
-          onClose={() => setAdding(false)}
-        />
-      )}
     </div>
-  )
-}
-
-function ProjectForm({ onSubmit, onClose }) {
-  function handleSubmit(e) {
-    e.preventDefault()
-    const f = new FormData(e.target)
-    onSubmit({
-      name: f.get('name'), description: f.get('description'),
-      startDate: f.get('startDate'), endDate: f.get('endDate'),
-    })
-  }
-  return (
-    <Modal title="새 프로젝트" onClose={onClose}>
-      <form onSubmit={handleSubmit} className="form">
-        <label>이름 <input name="name" required /></label>
-        <label>설명 <textarea name="description" /></label>
-        <label>시작일 <input name="startDate" type="date" required /></label>
-        <label>종료일 <input name="endDate" type="date" required /></label>
-        <button type="submit" className="btn-primary">추가</button>
-      </form>
-    </Modal>
   )
 }

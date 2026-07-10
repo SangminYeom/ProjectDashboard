@@ -26,9 +26,8 @@ const projects = [
 
 function setup() {
   const onOpen = vi.fn()
-  const onChange = vi.fn()
-  render(<Home projects={projects} onOpen={onOpen} onChange={onChange} />)
-  return { onOpen, onChange }
+  render(<Home projects={projects} onOpen={onOpen} />)
+  return { onOpen }
 }
 
 it('페이지 제목을 표시한다', () => {
@@ -45,16 +44,10 @@ it('카드에 이름·과제명·KPI 수치 포맷을 표시한다', () => {
   expect(screen.getByText(/7억 \/ 10억/)).toBeInTheDocument()
 })
 
-it('카드 클릭 시 onOpen을 호출한다', () => {
+it('프로젝트 카드를 클릭하면 onOpen이 호출된다', () => {
   const { onOpen } = setup()
-  fireEvent.click(screen.getByText('차세대 시스템').closest('button'))
+  fireEvent.click(screen.getByRole('button', { name: /차세대 시스템/ }))
   expect(onOpen).toHaveBeenCalledWith('p1')
-})
-
-it('새 프로젝트 추가 폼을 열 수 있다', () => {
-  setup()
-  fireEvent.click(screen.getByText('+ 새 프로젝트'))
-  expect(screen.getByRole('heading', { name: '새 프로젝트' })).toBeInTheDocument()
 })
 
 it('과제의 미해결 쟁점을 카드에 표시한다 (여러 과제 합산, 해결 건 제외)', () => {
