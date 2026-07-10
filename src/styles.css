@@ -286,17 +286,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
   left: 0; width: 100%;
   background: repeating-linear-gradient(90deg, #d2d2d7 0, #d2d2d7 3px, transparent 3px, transparent 8px);
 }
-.today-marker {
-  position: absolute;
-  top: 50%;
-  height: 32px;
-  width: 2px;
-  background: #ff3b30;
-  border-radius: 1px;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  pointer-events: none;
-}
 .today-marker-pill {
   position: absolute;
   bottom: calc(100% + 5px);

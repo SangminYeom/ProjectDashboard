@@ -36,22 +36,22 @@ it('막대 위치가 기간에 비례한다', () => {
   expect(parseFloat(bars[1].style.left)).toBeGreaterThan(50) // 4월 시작은 중반 이후
 })
 
-it('모든 태스크가 미래여도 오늘선이 0% 이상에 위치한다', () => {
+it('모든 태스크가 미래여도 오늘 라벨이 0% 이상에 위치한다', () => {
   const future = [{ id: 'f1', type: 'task', name: '미래 태스크', startDate: '2026-07-01', endDate: '2026-08-31', progress: 0, status: '예정' }]
   const { container } = render(
     <Gantt items={future} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
   )
-  const todayMarker = container.querySelector('.today-marker')
-  expect(parseFloat(todayMarker.style.left)).toBeGreaterThanOrEqual(0)
+  const todayPill = container.querySelector('.today-marker-pill')
+  expect(parseFloat(todayPill.style.left)).toBeGreaterThanOrEqual(0)
 })
 
-it('오늘선이 헤더뿐 아니라 모든 태스크 행에 걸쳐 연속으로 그려진다 (지라식)', () => {
+it('오늘 표시는 세로선 없이 헤더의 라벨(화살표 포함) 하나로만 간략히 표시된다', () => {
   const { container } = render(
     <Gantt items={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
   )
-  // 트랙 3개(헤더 1 + 태스크 2) 각각에 오늘선 세그먼트가 하나씩
-  expect(container.querySelectorAll('.today-marker')).toHaveLength(3)
-  // '오늘' 라벨(pill)은 헤더에만 한 번
+  // 행을 관통하는 세로선은 없다
+  expect(container.querySelectorAll('.today-marker')).toHaveLength(0)
+  // '오늘' 라벨은 헤더에 하나만
   expect(container.querySelectorAll('.today-marker-pill')).toHaveLength(1)
 })
 
