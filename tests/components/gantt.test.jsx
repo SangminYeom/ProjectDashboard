@@ -3,31 +3,33 @@ import { vi } from 'vitest'
 import Gantt from '../../src/components/Gantt.jsx'
 
 const tasks = [
-  { id: 't1', name: '서버 이전', startDate: '2026-01-01', endDate: '2026-03-31', progress: 100, status: '완료' },
-  { id: 't2', name: '모니터링 구축', startDate: '2026-04-01', endDate: '2026-05-31', progress: 20, status: '진행중' },
+  { id: 't1', type: 'task', name: '서버 이전', startDate: '2026-01-01', endDate: '2026-03-31', progress: 100, status: '완료' },
+  { id: 't2', type: 'task', name: '모니터링 구축', startDate: '2026-04-01', endDate: '2026-05-31', progress: 20, status: '진행중' },
 ]
 
+const milestone = { id: 'm1', type: 'milestone', name: '서비스 배포일', date: '2026-06-15' }
+
 it('태스크가 없으면 안내 문구를 표시한다', () => {
-  render(<Gantt tasks={[]} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />)
+  render(<Gantt items={[]} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />)
   expect(screen.getByText('태스크가 없습니다.')).toBeInTheDocument()
 })
 
 it('지연 태스크에 ⚠ 지연 표시, 완료 태스크는 상태 그대로', () => {
-  render(<Gantt tasks={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />)
+  render(<Gantt items={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />)
   expect(screen.getByText('⚠ 지연')).toBeInTheDocument()  // t2: 종료일 지남 + 20%
   expect(screen.getByText('완료')).toBeInTheDocument()     // t1
 })
 
 it('진척률 인라인 수정 시 onUpdate 호출 (0~100 범위로 보정)', () => {
   const onUpdate = vi.fn()
-  render(<Gantt tasks={tasks} onUpdate={onUpdate} onRemove={() => {}} today="2026-06-07" />)
+  render(<Gantt items={tasks} onUpdate={onUpdate} onRemove={() => {}} today="2026-06-07" />)
   fireEvent.change(screen.getByLabelText('모니터링 구축 진척률'), { target: { value: '150' } })
   expect(onUpdate).toHaveBeenCalledWith('t2', { progress: 100 })
 })
 
 it('막대 위치가 기간에 비례한다', () => {
   const { container } = render(
-    <Gantt tasks={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
+    <Gantt items={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
   )
   const bars = container.querySelectorAll('.gantt-bar')
   expect(bars[0].style.left).toBe('0%') // 첫 태스크는 범위 시작점
@@ -35,25 +37,19 @@ it('막대 위치가 기간에 비례한다', () => {
 })
 
 it('모든 태스크가 미래여도 오늘선이 0% 이상에 위치한다', () => {
-  const future = [{ id: 'f1', name: '미래 태스크', startDate: '2026-07-01', endDate: '2026-08-31', progress: 0, status: '예정' }]
+  const future = [{ id: 'f1', type: 'task', name: '미래 태스크', startDate: '2026-07-01', endDate: '2026-08-31', progress: 0, status: '예정' }]
   const { container } = render(
-    <Gantt tasks={future} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
+    <Gantt items={future} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />
   )
-  const todayLine = container.querySelector('.today-line')
-  expect(parseFloat(todayLine.style.left)).toBeGreaterThanOrEqual(0)
+  const todayMarker = container.querySelector('.today-marker')
+  expect(parseFloat(todayMarker.style.left)).toBeGreaterThanOrEqual(0)
 })
-
-const milestones = [
-  { id: 'm1', name: '서비스 배포일', date: '2026-06-15' },
-]
 
 it('마일스톤 행이 렌더링된다', () => {
   render(
     <Gantt
-      tasks={tasks}
+      items={[...tasks, milestone]}
       onUpdate={() => {}} onRemove={() => {}} onReorder={() => {}}
-      milestones={milestones}
-      onMilestoneUpdate={() => {}} onMilestoneRemove={() => {}} onMilestoneReorder={() => {}}
       today="2026-06-07"
     />
   )
@@ -64,10 +60,8 @@ it('마일스톤 행이 렌더링된다', () => {
 it('마일스톤만 있고 tasks가 없어도 렌더링된다', () => {
   render(
     <Gantt
-      tasks={[]}
+      items={[milestone]}
       onUpdate={() => {}} onRemove={() => {}} onReorder={() => {}}
-      milestones={milestones}
-      onMilestoneUpdate={() => {}} onMilestoneRemove={() => {}} onMilestoneReorder={() => {}}
       today="2026-06-07"
     />
   )
@@ -75,13 +69,11 @@ it('마일스톤만 있고 tasks가 없어도 렌더링된다', () => {
 })
 
 it('마일스톤 date가 Gantt min/max 범위에 포함된다', () => {
-  const futureMilestone = [{ id: 'm2', name: '최종완료', date: '2027-01-01' }]
+  const futureMilestone = { id: 'm2', type: 'milestone', name: '최종완료', date: '2027-01-01' }
   const { container } = render(
     <Gantt
-      tasks={tasks}
+      items={[...tasks, futureMilestone]}
       onUpdate={() => {}} onRemove={() => {}} onReorder={() => {}}
-      milestones={futureMilestone}
-      onMilestoneUpdate={() => {}} onMilestoneRemove={() => {}} onMilestoneReorder={() => {}}
       today="2026-06-07"
     />
   )
