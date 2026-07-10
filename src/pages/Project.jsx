@@ -129,13 +129,13 @@ const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
               return (
                 <Fragment key={i.id}>
                   <div className="ini-row">
-                    <span className="ini-name">{i.name}</span>
+                    <span className="ini-name" title={i.name}>{i.name}</span>
                     <div className="ini-track"><div className="ini-fill" style={{ width: `${prog}%` }} /></div>
                     <span className="ini-pct">{prog}%</span>
                   </div>
                   {(i.items ?? i.milestones ?? []).filter(x => x.type === 'milestone' || (!x.type && x.date && !x.startDate)).map((m) => (
                     <div key={m.id} className="ini-row">
-                      <span className="ini-name">
+                      <span className="ini-name" title={m.name}>
                         <span className="milestone-icon">◆</span>{m.name}
                       </span>
                       <div style={{ flex: 1 }} />

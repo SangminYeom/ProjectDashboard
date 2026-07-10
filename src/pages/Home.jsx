@@ -57,7 +57,7 @@ export default function Home({ projects, onOpen }) {
                       const prog = initiativeProgress(i)
                       return (
                         <div key={i.id} className="ini-row">
-                          <span className="ini-name">{i.name}</span>
+                          <span className="ini-name" title={i.name}>{i.name}</span>
                           <div className="ini-track"><div className="ini-fill" style={{ width: `${prog}%` }} /></div>
                           <span className="ini-pct">{prog}%</span>
                         </div>
