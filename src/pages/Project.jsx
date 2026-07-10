@@ -4,7 +4,7 @@ import Initiatives from '../components/Initiatives.jsx'
 import OperationsTable from '../components/OperationsTable.jsx'
 import ProjectOverview from '../components/ProjectOverview.jsx'
 import ProjectIssues from '../components/ProjectIssues.jsx'
-import Modal from '../components/Modal.jsx'
+import ProjectForm from '../components/ProjectForm.jsx'
 import { kpiRate, initiativeProgress, countOpenIssues } from '../lib/calc.js'
 import { projectColor } from '../lib/colors.js'
 
@@ -54,8 +54,8 @@ export default function Project({ project, onChange, onDelete, onBack }) {
       </header>
 
       {editing && (
-        <ProjectEditForm
-          project={project}
+        <ProjectForm
+          initial={project}
           onSubmit={(patch) => { onChange((p) => ({ ...p, ...patch })); setEditing(false) }}
           onClose={() => setEditing(false)}
         />
@@ -183,27 +183,3 @@ const ProjectSnapshot = forwardRef(function ProjectSnapshot({ project }, ref) {
     </div>
   )
 })
-
-function ProjectEditForm({ project, onSubmit, onClose }) {
-  function handleSubmit(e) {
-    e.preventDefault()
-    const f = new FormData(e.target)
-    onSubmit({
-      name: f.get('name'),
-      description: f.get('description'),
-      startDate: f.get('startDate'),
-      endDate: f.get('endDate'),
-    })
-  }
-  return (
-    <Modal title="프로젝트 수정" onClose={onClose}>
-      <form onSubmit={handleSubmit} className="form">
-        <label>이름 <input name="name" defaultValue={project.name} required /></label>
-        <label>설명 <textarea name="description" defaultValue={project.description} /></label>
-        <label>시작일 <input name="startDate" type="date" defaultValue={project.startDate} required /></label>
-        <label>종료일 <input name="endDate" type="date" defaultValue={project.endDate} required /></label>
-        <button type="submit" className="btn-primary">저장</button>
-      </form>
-    </Modal>
-  )
-}
