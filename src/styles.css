@@ -220,6 +220,8 @@ input:focus, select:focus, textarea:focus { border-color: #0071e3; }
 }
 .btn-export:hover { background: #f0f6ff; }
 .proj-title { font-size: 26px; font-weight: 700; letter-spacing: -.5px; color: #1d1d1f; margin: 0 0 4px; }
+.proj-title { display: flex; align-items: center; gap: 9px; }
+.proj-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
 .proj-period { font-size: 13px; color: #86868b; }
 
 /* ===== 탭 ===== */

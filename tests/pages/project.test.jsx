@@ -26,26 +26,29 @@ function setup() {
   return { onChange, onBack }
 }
 
-it('프로젝트명·기간·KPI 바를 표시하고 기본 탭은 중점수행과제', () => {
+it('기본 탭은 개요이고 KPI와 과제 진척을 보여준다', () => {
   setup()
   expect(screen.getAllByText('차세대 시스템')[0]).toBeInTheDocument()
-  expect(screen.getAllByText(/2026-01-01\s*–\s*2026-12-31/)[0]).toBeInTheDocument()
-  expect(screen.getByText('70%')).toBeInTheDocument()              // KPI 바 (snapshot은 '진척 70%'로 다름)
-  expect(screen.getAllByText('인프라 전환')[0]).toBeInTheDocument()  // 기본 탭 내용
+  expect(screen.getByText('70%')).toBeInTheDocument()
+  expect(screen.getAllByText('인프라 전환')[0]).toBeInTheDocument()
 })
 
-it('탭 전환이 동작한다', () => {
+it('과제 탭으로 전환하면 과제 목록이 보인다', () => {
   setup()
-  fireEvent.click(screen.getByRole('button', { name: /운영업무/ }))
+  fireEvent.click(screen.getByRole('button', { name: /^과제/ }))
+  expect(screen.getAllByText('인프라 전환')[0]).toBeInTheDocument()
+})
+
+it('운영 탭으로 전환하면 운영업무가 보인다', () => {
+  setup()
+  fireEvent.click(screen.getByRole('button', { name: /^운영/ }))
   expect(screen.getByDisplayValue('주간 보고')).toBeInTheDocument()
-  expect(screen.getAllByText('계약 지연')).toHaveLength(1) // 스냅샷에만 존재
-  fireEvent.click(screen.getByRole('button', { name: /중점수행과제/ }))
-  expect(screen.getAllByText('계약 지연')).toHaveLength(1) // 스냅샷에만 존재(쟁점은 전용 탭으로 이동, 과제 카드엔 내용 미표시)
 })
 
-it('고려사항 탭이 더 이상 존재하지 않는다', () => {
+it('쟁점 탭으로 전환하면 집계된 쟁점이 보인다', () => {
   setup()
-  expect(screen.queryByRole('button', { name: /고려사항/ })).not.toBeInTheDocument()
+  fireEvent.click(screen.getByRole('button', { name: /^쟁점/ }))
+  expect(screen.getAllByText('계약 지연')[0]).toBeInTheDocument()
 })
 
 it('뒤로 가기 버튼이 onBack을 호출한다', () => {

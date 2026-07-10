@@ -1,20 +1,24 @@
 import { useState, useRef, forwardRef, Fragment } from 'react'
 import { toPng } from 'html-to-image'
-import KpiBar from '../components/KpiBar.jsx'
 import Initiatives from '../components/Initiatives.jsx'
 import OperationsTable from '../components/OperationsTable.jsx'
+import ProjectOverview from '../components/ProjectOverview.jsx'
+import ProjectIssues from '../components/ProjectIssues.jsx'
 import Modal from '../components/Modal.jsx'
-import { kpiRate, initiativeProgress } from '../lib/calc.js'
+import { kpiRate, initiativeProgress, countOpenIssues } from '../lib/calc.js'
+import { projectColor } from '../lib/colors.js'
 
-const TABS = ['중점수행과제', '운영업무']
+const TABS = ['개요', '과제', '운영', '쟁점']
 
 export default function Project({ project, onChange, onDelete, onBack }) {
   const [tab, setTab] = useState(TABS[0])
   const [editing, setEditing] = useState(false)
   const reportRef = useRef(null)
   const counts = {
-    중점수행과제: project.initiatives.length,
-    운영업무: project.operations.length,
+    개요: null,
+    과제: project.initiatives.length,
+    운영: project.operations.length,
+    쟁점: countOpenIssues(project),
   }
 
   function handleExport() {
@@ -34,7 +38,10 @@ export default function Project({ project, onChange, onDelete, onBack }) {
         <button className="back-btn" onClick={onBack}>← 홈</button>
         <div className="page-head-row">
           <div>
-            <h1 className="proj-title">{project.name}</h1>
+            <h1 className="proj-title">
+              <span className="proj-dot" style={{ background: projectColor(project.id) }} aria-hidden="true" />
+              {project.name}
+            </h1>
             <span className="proj-period">{project.startDate} – {project.endDate}</span>
           </div>
           <div className="page-head-actions">
@@ -54,24 +61,28 @@ export default function Project({ project, onChange, onDelete, onBack }) {
         />
       )}
 
-      <KpiBar kpis={project.kpis} onChange={(kpis) => onChange((p) => ({ ...p, kpis }))} />
-
       <nav className="tabs">
         {TABS.map((t) => (
           <button key={t} className={t === tab ? 'tab active' : 'tab'} onClick={() => setTab(t)}>
-            {t} ({counts[t]})
+            {t}{counts[t] != null ? ` (${counts[t]})` : ''}
           </button>
         ))}
       </nav>
 
-      {tab === '중점수행과제' && (
+      {tab === '개요' && <ProjectOverview project={project} onChange={onChange} />}
+      {tab === '과제' && (
         <Initiatives initiatives={project.initiatives}
           onChange={(initiatives) => onChange((p) => ({ ...p, initiatives }))} />
       )}
-      {tab === '운영업무' && (
+      {tab === '운영' && (
         <OperationsTable operations={project.operations}
           onChange={(operations) => onChange((p) => ({ ...p, operations }))} />
       )}
+      {tab === '쟁점' && (
+        <ProjectIssues initiatives={project.initiatives}
+          onChange={(initiatives) => onChange((p) => ({ ...p, initiatives }))} />
+      )}
+
       <ProjectSnapshot ref={reportRef} project={project} />
     </div>
   )
