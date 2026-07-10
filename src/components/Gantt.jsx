@@ -169,8 +169,11 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
                 <span className="task-name-text">{item.name}</span>
               </span>
               <span className="task-progress">
-                <input type="number" min="0" max="100" value={item.progress} aria-label={`${item.name} 진척률`}
-                  onChange={(e) => onUpdate(item.id, { progress: Math.max(0, Math.min(100, Number(e.target.value) || 0)) })} />%
+                <input type="text" inputMode="numeric" pattern="[0-9]*" value={item.progress} aria-label={`${item.name} 진척률`}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/[^0-9]/g, '')
+                    onUpdate(item.id, { progress: digits === '' ? 0 : Math.max(0, Math.min(100, Number(digits))) })
+                  }} />%
               </span>
               <span className="task-date">
                 {hasDate(item) ? `${fmtDate(item.startDate)}~${fmtDate(item.endDate)}` : '—'}

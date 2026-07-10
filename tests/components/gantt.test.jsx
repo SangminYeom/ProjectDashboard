@@ -27,6 +27,31 @@ it('진척률 인라인 수정 시 onUpdate 호출 (0~100 범위로 보정)', ()
   expect(onUpdate).toHaveBeenCalledWith('t2', { progress: 100 })
 })
 
+it('진척률 입력은 텍스트 입력(type=text)이라 커서가 튀는 숫자 입력 버그가 없다', () => {
+  render(<Gantt items={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />)
+  const input = screen.getByLabelText('모니터링 구축 진척률')
+  expect(input).toHaveAttribute('type', 'text')
+  expect(input).toHaveAttribute('inputmode', 'numeric')
+})
+
+it('0에서 이어서 1, 0을 입력하면(브라우저가 낱글자마다 onChange를 발생) 10으로 계산된다', () => {
+  const onUpdate = vi.fn()
+  const zeroTask = [{ id: 't3', type: 'task', name: '신규', startDate: '2026-01-01', endDate: '2026-02-01', progress: 0, status: '예정' }]
+  render(<Gantt items={zeroTask} onUpdate={onUpdate} onRemove={() => {}} today="2026-06-07" />)
+  const input = screen.getByLabelText('신규 진척률')
+  fireEvent.change(input, { target: { value: '01' } }) // 커서가 0 뒤에서 '1' 입력 시 브라우저가 보내는 원문자열
+  expect(onUpdate).toHaveBeenLastCalledWith('t3', { progress: 1 })
+  fireEvent.change(input, { target: { value: '10' } }) // 이어서 '0' 입력
+  expect(onUpdate).toHaveBeenLastCalledWith('t3', { progress: 10 })
+})
+
+it('숫자가 아닌 문자가 섞여 들어와도 무시하고 숫자만 반영한다', () => {
+  const onUpdate = vi.fn()
+  render(<Gantt items={tasks} onUpdate={onUpdate} onRemove={() => {}} today="2026-06-07" />)
+  fireEvent.change(screen.getByLabelText('모니터링 구축 진척률'), { target: { value: '5a' } })
+  expect(onUpdate).toHaveBeenLastCalledWith('t2', { progress: 5 })
+})
+
 it('막대 위치가 기간에 비례한다', () => {
   const { container } = render(
     <Gantt items={tasks} onUpdate={() => {}} onRemove={() => {}} today="2026-06-07" />

@@ -295,7 +295,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .task-name { width: 180px; flex-shrink: 0; }
 .task-name-text { font-size: 13px; color: #1d1d1f; word-break: keep-all; line-height: 1.4; }
 .task-progress { width: 70px; flex-shrink: 0; font-size: 13px; color: #86868b; }
-.task-progress input { width: 52px; padding: 2px 4px; font-size: 12px; }
+.task-progress input { width: 52px; padding: 2px 4px; font-size: 12px; text-align: center; }
 .task-date { width: 110px; flex-shrink: 0; font-size: 11px; color: #86868b; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .task-date--header { font-size: 11px; color: #aeaeb2; }
 .gantt-row.unscheduled .task-date { color: #c7c7cc; }
