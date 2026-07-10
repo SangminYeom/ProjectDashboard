@@ -37,3 +37,21 @@ it('잘못된 숫자 입력은 0으로 보정한다', () => {
   fireEvent.change(screen.getByLabelText('매출 현재값'), { target: { value: '' } })
   expect(onChange).toHaveBeenCalledWith([{ ...numericKpi, current: 0 }])
 })
+
+it('수치형 KPI는 진행률만큼 채워지는 게이지 바를 표시한다', () => {
+  const { container } = render(<KpiBar kpis={[numericKpi]} onChange={() => {}} />)
+  const fill = container.querySelector('.gauge-fill')
+  expect(fill.style.width).toBe('70%') // 7/10 = 70%
+})
+
+it('진행률이 100%를 넘으면 게이지 바는 100%에서 시각적으로 멈춘다 (숫자는 그대로)', () => {
+  const over = { id: 'k3', name: '초과달성', type: 'numeric', target: 10, current: 15, unit: '건' }
+  const { container } = render(<KpiBar kpis={[over]} onChange={() => {}} />)
+  expect(screen.getByText('150%')).toBeInTheDocument()
+  expect(container.querySelector('.gauge-fill').style.width).toBe('100%')
+})
+
+it('정성형 KPI의 상태값에 따라 색상 클래스가 다르게 붙는다 (아사나식 상태 표시)', () => {
+  render(<KpiBar kpis={[qualKpi]} onChange={() => {}} />)
+  expect(screen.getByLabelText('품질 상태')).toHaveClass('kpi-qual-select--accent') // 순항
+})

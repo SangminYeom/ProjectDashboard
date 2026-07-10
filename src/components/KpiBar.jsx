@@ -3,6 +3,7 @@ import Modal from './Modal.jsx'
 import { kpiRate } from '../lib/calc.js'
 
 const QUAL_STATUS = ['달성', '순항', '주의', '미달']
+const QUAL_COLOR = { 달성: 'ok', 순항: 'accent', 주의: 'warn', 미달: 'danger' }
 
 export default function KpiBar({ kpis, onChange }) {
   const [adding, setAdding] = useState(false)
@@ -48,6 +49,7 @@ export default function KpiBar({ kpis, onChange }) {
             {k.type === 'numeric' ? (
               <>
                 <div className="kpi-rate">{rate}%</div>
+                <div className="gauge"><div className="gauge-fill" style={{ width: `${Math.min(rate, 100)}%` }} /></div>
                 <div className="kpi-detail">
                   <input type="number" value={k.current} aria-label={`${k.name} 현재값`}
                     onChange={(e) => update(k.id, { current: Number(e.target.value) || 0 })} />
@@ -55,7 +57,9 @@ export default function KpiBar({ kpis, onChange }) {
                 </div>
               </>
             ) : (
-              <select value={k.status} aria-label={`${k.name} 상태`}
+              <select
+                className={`kpi-qual-select kpi-qual-select--${QUAL_COLOR[k.status]}`}
+                value={k.status} aria-label={`${k.name} 상태`}
                 onChange={(e) => update(k.id, { status: e.target.value })}>
                 {QUAL_STATUS.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>

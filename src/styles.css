@@ -206,14 +206,25 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 }
 .kpi-title { font-size: 14px; font-weight: 600; color: #1d1d1f; flex: 1; line-height: 1.35; }
 .kpi-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
-.kpi-rate { font-size: 28px; font-weight: 700; color: #1d1d1f; margin-bottom: 4px; letter-spacing: -.5px; }
+.kpi-rate { font-size: 28px; font-weight: 700; color: #1d1d1f; margin-bottom: 8px; letter-spacing: -.5px; }
 .kpi-detail {
   font-size: 12px; color: #86868b;
   display: flex; align-items: center; gap: 6px;
 }
 .kpi-detail input { width: 72px; padding: 3px 6px; font-size: 13px; }
-.gauge { background: #e8e8ed; height: 4px; border-radius: 2px; overflow: hidden; }
-.gauge-fill { background: var(--accent); height: 100%; border-radius: 2px; transition: width .3s ease; }
+.gauge { background: #e8e8ed; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+.gauge-fill { background: var(--accent); height: 100%; border-radius: 3px; transition: width .3s ease; }
+
+/* 정성형 KPI 상태 선택 (아사나식 컬러 배지) */
+.kpi-qual-select {
+  font-size: 12px; font-weight: 600;
+  border: none; border-radius: 20px;
+  padding: 4px 10px 4px 10px;
+}
+.kpi-qual-select--ok     { background: #eaf3de; color: var(--ok); }
+.kpi-qual-select--accent { background: var(--accent-bg); color: var(--accent-strong); }
+.kpi-qual-select--warn   { background: #faeeda; color: var(--warn); }
+.kpi-qual-select--danger { background: #fcebeb; color: var(--danger); }
 
 
 /* ===== 프로젝트 상세 헤더 ===== */
