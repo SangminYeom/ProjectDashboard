@@ -112,6 +112,7 @@ export default function Gantt({ items = [], onUpdate, onRemove, onReorder, today
               <span
                 key={i}
                 className={`gantt-axis-cell${i === 0 ? ' gantt-axis-first' : i === ticks.length - 1 ? ' gantt-axis-last' : ''}`}
+                style={{ left: `${GRID_TICKS[i]}%` }}
               >
                 {label}
               </span>
