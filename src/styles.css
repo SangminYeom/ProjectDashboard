@@ -278,14 +278,20 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .initiative-body { padding: 0 18px 16px; }
 .initiative-add-btns { display: flex; gap: 8px; }
 
-.drag-handle { color: #d2d2d7; cursor: grab; font-size: 14px; flex-shrink: 0; user-select: none; }
+.drag-handle {
+  color: var(--text-muted); cursor: grab; font-size: 13px; flex-shrink: 0; user-select: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: var(--radius-ctl);
+  transition: background .15s, color .15s;
+}
+.drag-handle:hover { background: var(--surface-sunk); color: var(--text-secondary); }
 .drag-handle:active { cursor: grabbing; }
 
 /* 간트 */
 .gantt { display: flex; flex-direction: column; gap: 6px; }
 .gantt-row { display: flex; align-items: center; gap: 10px; font-size: 13px; border-radius: 6px; padding: 2px 0; }
 .gantt-row.drag-over { background: var(--accent-bg); }
-.drag-handle-col { width: 20px; flex-shrink: 0; }
+.drag-handle-col { width: 22px; flex-shrink: 0; }
 .task-name { width: 180px; flex-shrink: 0; }
 .task-name-text { font-size: 13px; color: #1d1d1f; word-break: keep-all; line-height: 1.4; }
 .task-progress { width: 70px; flex-shrink: 0; font-size: 13px; color: #86868b; }
