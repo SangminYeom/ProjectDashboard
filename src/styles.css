@@ -7,9 +7,9 @@
   --accent-bg:     #FAECE7;
 
   /* 표면 */
-  --surface-page: #f5f5f7;
+  --surface-page: #faf9f7;
   --surface-card: #ffffff;
-  --surface-sunk: #f1f1f4;
+  --surface-sunk: #f2f0ed;
 
   /* 텍스트 */
   --text-primary:   #1d1d1f;
@@ -38,7 +38,7 @@ body {
   margin: 0;
   font-family: -apple-system, 'SF Pro Display', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: #f5f5f7;
+  background: var(--surface-page);
   color: #1d1d1f;
 }
 .app { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
@@ -478,7 +478,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .snapshot-period { font-size: 13px; color: #86868b; margin-top: 4px; }
 
 /* ── Login ── */
-.login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f5f5f7; }
+.login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--surface-page); }
 .login-card { background: #fff; border-radius: 18px; padding: 40px 48px; box-shadow: 0 4px 24px rgba(0,0,0,.08); min-width: 320px; }
 .login-title { font-size: 20px; font-weight: 700; margin: 0 0 4px; }
 .login-subtitle { font-size: 13px; color: #86868b; margin: 0 0 24px; }
