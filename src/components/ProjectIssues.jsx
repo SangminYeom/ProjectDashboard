@@ -54,7 +54,7 @@ export default function ProjectIssues({ initiatives, onChange }) {
       ))}
       {active.length === 0 && <p className="empty">미해결 쟁점이 없습니다.</p>}
 
-      <button className="btn-primary" onClick={() => setAdding(true)} disabled={initiatives.length === 0}>
+      <button className="btn-primary" style={{ alignSelf: 'flex-start' }} onClick={() => setAdding(true)} disabled={initiatives.length === 0}>
         + 쟁점 추가
       </button>
       {initiatives.length === 0 && <p className="empty">쟁점을 추가하려면 먼저 과제를 만드세요.</p>}
