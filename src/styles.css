@@ -148,8 +148,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
   flex: 0 0 128px; width: 128px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.ini-track { flex: 1; height: 5px; background: #e8e8ed; border-radius: 3px; overflow: hidden; min-width: 40px; }
-.ini-fill  { height: 100%; border-radius: 3px; background: var(--accent); }
+.ini-track { flex: 1; height: 8px; background: #e8e8ed; border-radius: 4px; overflow: hidden; min-width: 40px; }
+.ini-fill  { height: 100%; border-radius: 4px; background: var(--accent); }
 .ini-pct   { font-size: 11px; color: #86868b; flex-shrink: 0; width: 26px; text-align: right; }
 
 /* KPI 리스트 (홈 카드) */
