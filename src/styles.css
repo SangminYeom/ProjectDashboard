@@ -451,6 +451,34 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .issue-card .meta { margin: 4px 0 0 21px; color: #86868b; font-size: 11px; }
 .resolved-section { margin-top: 20px; opacity: .7; }
 
+/* ===== 주요 일정 ===== */
+.schedules-page { max-width: 640px; }
+.schedule-group { margin-bottom: 20px; }
+.schedule-group-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .5px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+}
+.schedule-list { display: flex; flex-direction: column; gap: 6px; }
+.schedule-row {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff; border-radius: 12px; padding: 9px 12px;
+  border: 1px solid var(--border); box-shadow: var(--shadow-card);
+}
+.schedule-row.is-past { opacity: .5; }
+.schedule-date { font-size: 12px; font-weight: 600; color: var(--text-secondary); flex-shrink: 0; width: 88px; }
+.schedule-badge--undated {
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  background: var(--surface-sunk); border-radius: 20px; padding: 3px 9px; flex-shrink: 0;
+}
+.schedule-title { font-size: 13px; color: #1d1d1f; flex: 1; min-width: 0; }
+.schedule-memo {
+  font-size: 12px; color: var(--text-muted); flex-shrink: 0; max-width: 200px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.schedule-actions { display: flex; gap: 2px; flex-shrink: 0; opacity: 0; transition: opacity .12s; }
+.schedule-row:hover .schedule-actions,
+.schedule-row:focus-within .schedule-actions { opacity: 1; }
+
 /* ===== 모달 / 폼 ===== */
 .modal-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,.35);
