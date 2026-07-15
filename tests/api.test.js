@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { loadProjects, createDebouncedSave } from '../src/api.js'
+import { loadProjects, loadSchedules, createDebouncedSave } from '../src/api.js'
 import { AuthError } from '../src/auth-error.js'
 
 beforeEach(() => vi.useFakeTimers())
@@ -74,5 +74,37 @@ describe('createDebouncedSave — 401 처리', () => {
     save([])
     await vi.advanceTimersByTimeAsync(100)
     expect(onError.mock.calls.at(-1)[0]).toBeInstanceOf(AuthError)
+  })
+})
+
+describe('loadSchedules', () => {
+  it('GET /api/schedules 응답을 반환한다', async () => {
+    vi.useRealTimers()
+    const payload = { schedules: [{ id: 's1' }] }
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(payload) }))
+    expect(await loadSchedules()).toEqual(payload)
+    expect(fetch).toHaveBeenCalledWith('/api/schedules', { credentials: 'include' })
+  })
+  it('401 응답 시 AuthError를 throw한다', async () => {
+    vi.useRealTimers()
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 401 }))
+    await expect(loadSchedules()).rejects.toBeInstanceOf(AuthError)
+  })
+  it('응답 실패 시 throw', async () => {
+    vi.useRealTimers()
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }))
+    await expect(loadSchedules()).rejects.toThrow('500')
+  })
+})
+
+describe('createDebouncedSave — endpoint/bodyKey 커스터마이즈', () => {
+  it('endpoint와 bodyKey를 지정하면 해당 경로/키로 PUT한다', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true })
+    vi.stubGlobal('fetch', fetchMock)
+    const save = createDebouncedSave({ endpoint: '/api/schedules', bodyKey: 'schedules', delay: 100 })
+    save([{ id: 's1' }])
+    await vi.advanceTimersByTimeAsync(100)
+    expect(fetchMock).toHaveBeenCalledWith('/api/schedules', expect.objectContaining({ method: 'PUT' }))
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({ schedules: [{ id: 's1' }] })
   })
 })

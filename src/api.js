@@ -9,16 +9,23 @@ export async function loadProjects() {
   return res.json()
 }
 
-export function createDebouncedSave({ delay = 500, onError } = {}) {
+export async function loadSchedules() {
+  const res = await fetch('/api/schedules', { credentials: 'include' })
+  if (res.status === 401) throw new AuthError()
+  if (!res.ok) throw new Error(`로드 실패: ${res.status}`)
+  return res.json()
+}
+
+export function createDebouncedSave({ endpoint = '/api/projects', bodyKey = 'projects', delay = 500, onError } = {}) {
   let timer = null
-  return function save(projects) {
+  return function save(items) {
     clearTimeout(timer)
     timer = setTimeout(async () => {
       try {
-        const res = await fetch('/api/projects', {
+        const res = await fetch(endpoint, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ projects }),
+          body: JSON.stringify({ [bodyKey]: items }),
           credentials: 'include',
         })
         if (res.status === 401) { onError?.(new AuthError()); return }
