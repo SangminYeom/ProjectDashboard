@@ -29,11 +29,26 @@ describe('readStore', () => {
 })
 
 describe('writeStore', () => {
-  it('neon upsert 쿼리를 한 번 호출한다', async () => {
-    const sqlFn = vi.fn().mockResolvedValue([])
+  it('neon upsert 쿼리를 호출한다 (기존 payload 조회 1회 + 저장 1회)', async () => {
+    const sqlFn = vi.fn()
+      .mockResolvedValueOnce([]) // SELECT: 기존 행 없음
+      .mockResolvedValueOnce([]) // INSERT ... ON CONFLICT
     neon.mockReturnValue(sqlFn)
     await writeStore({ projects: [{ id: 'p1' }] })
     expect(neon).toHaveBeenCalledWith(process.env.DATABASE_URL)
-    expect(sqlFn).toHaveBeenCalledTimes(1)
+    expect(sqlFn).toHaveBeenCalledTimes(2)
+  })
+
+  it('기존 payload의 다른 키를 보존하며 병합한다', async () => {
+    const sqlFn = vi.fn()
+      .mockResolvedValueOnce([{ payload: { projects: [{ id: 'p1' }] } }])
+      .mockResolvedValueOnce([])
+    neon.mockReturnValue(sqlFn)
+    await writeStore({ schedules: [{ id: 's1' }] })
+    const insertedJson = sqlFn.mock.calls[1][1]
+    expect(JSON.parse(insertedJson)).toEqual({
+      projects: [{ id: 'p1' }],
+      schedules: [{ id: 's1' }],
+    })
   })
 })

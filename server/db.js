@@ -9,9 +9,12 @@ export async function readStore() {
   return rows[0]?.payload ?? { projects: [] }
 }
 
-export async function writeStore(payload) {
+export async function writeStore(partialPayload) {
   const db = neon(process.env.DATABASE_URL)
-  const json = JSON.stringify(payload)
+  const rows = await db`SELECT payload FROM store WHERE id = 1`
+  const current = rows[0]?.payload ?? { projects: [] }
+  const merged = { ...current, ...partialPayload }
+  const json = JSON.stringify(merged)
   await db`
     INSERT INTO store (id, payload, updated_at)
     VALUES (1, ${json}::jsonb, now())
