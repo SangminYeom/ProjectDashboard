@@ -21,15 +21,23 @@ export default function Schedules({ schedules, onChange }) {
     if (!confirm(`'${schedule.title}' 일정을 삭제할까요?`)) return
     onChange(schedules.filter((s) => s.id !== schedule.id))
   }
+  function toggleDone(schedule, done) {
+    onChange(schedules.map((s) => (s.id === schedule.id ? { ...s, done, updatedAt: new Date().toISOString() } : s)))
+  }
 
   return (
     <div className="schedules-page">
-      <header className="home-header">
-        <h1 className="home-title">주요 일정</h1>
-        <p className="home-subtitle">프로젝트와 무관한 회사 전체 주요 일정</p>
+      <header className="page-head">
+        <div className="page-head-row">
+          <div>
+            <h1 className="home-title">주요 일정</h1>
+            <p className="home-subtitle">보고, 의사결정 등 주요 일정</p>
+          </div>
+          <div className="page-head-actions">
+            <button className="btn-primary" onClick={() => setAdding(true)}>+ 일정 추가</button>
+          </div>
+        </div>
       </header>
-
-      <button className="btn-primary" onClick={() => setAdding(true)}>+ 일정 추가</button>
 
       {undated.length === 0 && dated.length === 0 && <p className="empty">등록된 일정이 없습니다.</p>}
 
@@ -39,6 +47,7 @@ export default function Schedules({ schedules, onChange }) {
           <div className="schedule-list">
             {undated.map((s) => (
               <ScheduleRow key={s.id} schedule={s}
+                onToggleDone={(done) => toggleDone(s, done)}
                 onEdit={() => setEditing(s)} onRemove={() => removeSchedule(s)} />
             ))}
           </div>
@@ -47,9 +56,11 @@ export default function Schedules({ schedules, onChange }) {
 
       {dated.length > 0 && (
         <section className="schedule-group">
+          <div className="schedule-group-label">예정된 일정</div>
           <div className="schedule-list">
             {dated.map((s) => (
               <ScheduleRow key={s.id} schedule={s} isPast={isPastSchedule(s, today)}
+                onToggleDone={(done) => toggleDone(s, done)}
                 onEdit={() => setEditing(s)} onRemove={() => removeSchedule(s)} />
             ))}
           </div>
@@ -72,9 +83,11 @@ export default function Schedules({ schedules, onChange }) {
   )
 }
 
-function ScheduleRow({ schedule, isPast, onEdit, onRemove }) {
+function ScheduleRow({ schedule, isPast, onToggleDone, onEdit, onRemove }) {
   return (
-    <div className={`schedule-row${isPast ? ' is-past' : ''}`}>
+    <div className={`schedule-row${isPast ? ' is-past' : ''}${schedule.done ? ' is-done' : ''}`}>
+      <input type="checkbox" className="schedule-check" checked={!!schedule.done}
+        onChange={(e) => onToggleDone(e.target.checked)} aria-label={`${schedule.title} 완료 여부`} />
       {schedule.date
         ? <span className="schedule-date">{schedule.date}</span>
         : <span className="schedule-badge schedule-badge--undated">미정</span>}

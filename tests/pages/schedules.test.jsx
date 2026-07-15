@@ -7,10 +7,12 @@ const schedules = [
   { id: 's2', title: '임원 보고', date: null, memo: '분기별', createdAt: '', updatedAt: '' },
 ]
 
-it('제목, 날짜 미정 그룹, 날짜 항목을 렌더한다', () => {
+it('제목, 부제, 날짜 미정/예정된 일정 라벨, 날짜 항목을 렌더한다', () => {
   render(<Schedules schedules={schedules} onChange={() => {}} />)
   expect(screen.getByRole('heading', { name: '주요 일정' })).toBeInTheDocument()
+  expect(screen.getByText('보고, 의사결정 등 주요 일정')).toBeInTheDocument()
   expect(screen.getByText('날짜 미정')).toBeInTheDocument()
+  expect(screen.getByText('예정된 일정')).toBeInTheDocument()
   expect(screen.getByText('워크샵')).toBeInTheDocument()
   expect(screen.getByText('임원 보고')).toBeInTheDocument()
 })
@@ -52,4 +54,15 @@ it('삭제 버튼 클릭 시 confirm 후 onChange가 해당 항목 제외하고 
   fireEvent.click(screen.getByRole('button', { name: '워크샵 삭제' }))
   const remaining = onChange.mock.calls[0][0]
   expect(remaining).toEqual([schedules[1]])
+})
+
+it('완료 체크박스 클릭 시 해당 항목만 done이 갱신되고 목록 위치는 유지된다', () => {
+  const onChange = vi.fn()
+  render(<Schedules schedules={schedules} onChange={onChange} />)
+  fireEvent.click(screen.getByLabelText('워크샵 완료 여부'))
+  const updated = onChange.mock.calls[0][0]
+  expect(updated).toHaveLength(2)
+  expect(updated.findIndex((s) => s.id === 's1')).toBe(0) // 원래 위치(0번) 그대로 유지
+  expect(updated.find((s) => s.id === 's1').done).toBe(true)
+  expect(updated.find((s) => s.id === 's2').done).toBeUndefined()
 })
