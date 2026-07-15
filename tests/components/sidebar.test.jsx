@@ -31,3 +31,10 @@ it('새 프로젝트 클릭 시 onAddProject 호출', () => {
   fireEvent.click(screen.getByRole('button', { name: /새 프로젝트/ }))
   expect(onAddProject).toHaveBeenCalled()
 })
+
+it('주요 일정 메뉴 클릭 시 onNavigate가 호출된다', () => {
+  const onNavigate = vi.fn()
+  render(<Sidebar projects={projects} view={{ page: 'home' }} onNavigate={onNavigate} onAddProject={() => {}} />)
+  fireEvent.click(screen.getByRole('button', { name: /주요 일정/ }))
+  expect(onNavigate).toHaveBeenCalledWith({ page: 'schedules' })
+})

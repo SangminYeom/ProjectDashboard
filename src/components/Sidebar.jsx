@@ -1,6 +1,6 @@
 import { projectColor } from '../lib/colors.js'
 import { projectSidebarStatus } from '../lib/projectStatus.js'
-import { GridIcon } from './icons.jsx'
+import { GridIcon, CalendarIcon } from './icons.jsx'
 
 export default function Sidebar({ projects, view, onNavigate, onAddProject }) {
   return (
@@ -13,6 +13,14 @@ export default function Sidebar({ projects, view, onNavigate, onAddProject }) {
       >
         <span className="side-ico"><GridIcon /></span>
         <span className="side-project-name">전체 개요</span>
+      </button>
+
+      <button
+        className={`side-item${view.page === 'schedules' ? ' active' : ''}`}
+        onClick={() => onNavigate({ page: 'schedules' })}
+      >
+        <span className="side-ico"><CalendarIcon /></span>
+        <span className="side-project-name">주요 일정</span>
       </button>
 
       <div className="side-section-label">프로젝트</div>
