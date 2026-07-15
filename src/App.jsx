@@ -1,19 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
-import { loadProjects, createDebouncedSave } from './api.js'
+import { loadProjects, loadSchedules, createDebouncedSave } from './api.js'
 import { AuthError } from './auth-error.js'
 import Home from './pages/Home.jsx'
 import Project from './pages/Project.jsx'
+import Schedules from './pages/Schedules.jsx'
 import Login from './pages/Login.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import ProjectForm from './components/ProjectForm.jsx'
 
 export default function App() {
   const [projects, setProjects] = useState(null)
+  const [schedules, setSchedules] = useState(null)
   const [view, setView] = useState({ page: 'home' })
   const [adding, setAdding] = useState(false)
   const [notice, setNotice] = useState(null)
   const [authed, setAuthed] = useState(null) // null=확인중, false=미인증, true=인증됨
   const saveRef = useRef(null)
+  const scheduleSaveRef = useRef(null)
 
   function migrateInitiative(init) {
     if (init.items !== undefined) return init
@@ -27,18 +30,23 @@ export default function App() {
   }
 
   useEffect(() => {
-    saveRef.current = createDebouncedSave({
-      onError: (err) => {
-        if (err instanceof AuthError) { setAuthed(false); return }
-        setNotice(err
-          ? { type: 'error', text: '저장에 실패했습니다. 변경 내용은 화면에 유지되어 있으니 잠시 후 다시 수정해 보세요.' }
-          : null)
-      },
+    function handleSaveError(err) {
+      if (err instanceof AuthError) { setAuthed(false); return }
+      setNotice(err
+        ? { type: 'error', text: '저장에 실패했습니다. 변경 내용은 화면에 유지되어 있으니 잠시 후 다시 수정해 보세요.' }
+        : null)
+    }
+    saveRef.current = createDebouncedSave({ onError: handleSaveError })
+    scheduleSaveRef.current = createDebouncedSave({
+      endpoint: '/api/schedules',
+      bodyKey: 'schedules',
+      onError: handleSaveError,
     })
-    loadProjects()
-      .then(({ projects, recoveredFrom }) => {
+    Promise.all([loadProjects(), loadSchedules()])
+      .then(([{ projects, recoveredFrom }, { schedules }]) => {
         setAuthed(true)
         setProjects(migrateProjects(projects))
+        setSchedules(schedules)
         if (recoveredFrom) {
           setNotice({ type: 'info', text: `데이터 파일이 손상되어 백업(${recoveredFrom})에서 복구했습니다.` })
         }
@@ -59,6 +67,11 @@ export default function App() {
     updateProjects(projects.map((p) => (p.id === id ? updater(p) : p)))
   }
 
+  function updateSchedules(next) {
+    setSchedules(next)
+    scheduleSaveRef.current?.(next)
+  }
+
   if (authed === null) {
     return <div className="app"><div className="loading">불러오는 중…</div></div>
   }
@@ -67,7 +80,7 @@ export default function App() {
     return <Login onSuccess={() => window.location.reload()} />
   }
 
-  if (projects === null) {
+  if (projects === null || schedules === null) {
     return (
       <div className="app">
         {notice && <div className={`banner banner-${notice.type}`}>{notice.text}</div>}
@@ -88,7 +101,9 @@ export default function App() {
       />
       <main className="shell-main">
         {notice && <div className={`banner banner-${notice.type}`}>{notice.text}</div>}
-        {current ? (
+        {view.page === 'schedules' ? (
+          <Schedules schedules={schedules} onChange={updateSchedules} />
+        ) : current ? (
           <Project
             key={current.id}
             project={current}

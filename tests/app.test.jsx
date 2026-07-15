@@ -12,6 +12,7 @@ const { sample, saveMock } = vi.hoisted(() => {
 
 vi.mock('../src/api.js', () => ({
   loadProjects: vi.fn().mockResolvedValue({ projects: [sample], recoveredFrom: null }),
+  loadSchedules: vi.fn().mockResolvedValue({ schedules: [] }),
   createDebouncedSave: vi.fn(() => saveMock),
 }))
 
@@ -50,4 +51,11 @@ it('loadProjects가 AuthError를 throw하면 로그인 화면을 표시한다', 
   loadProjects.mockRejectedValueOnce(new AuthError())
   render(<App />)
   expect(await screen.findByRole('button', { name: '로그인' })).toBeInTheDocument()
+})
+
+it('주요 일정 메뉴 클릭 시 일정 페이지를 보여준다', async () => {
+  render(<App />)
+  const btn = await screen.findByRole('button', { name: /주요 일정/ })
+  fireEvent.click(btn)
+  expect(await screen.findByRole('heading', { name: '주요 일정' })).toBeInTheDocument()
 })
